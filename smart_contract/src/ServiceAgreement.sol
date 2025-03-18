@@ -62,6 +62,14 @@ contract ServiceAgreement is ReentrancyGuard {
     }
 
     // external functions
+    /**
+     * @notice Initializes the service agreement with the client, payment token, and budget.
+     * @dev This function can only be called once. Sets the status to Active.
+     * @param _client The address of the client.
+     * @param _paymentToken The ERC20 token used for payments.
+     * @param _budget The total budget for the service agreement.
+     */
+
     function initialize(
         address _client,
         ERC20 _paymentToken,
@@ -77,6 +85,12 @@ contract ServiceAgreement is ReentrancyGuard {
         status = Status.Active;
     }
 
+    /**
+     * @notice Funds the escrow with the budget amount.
+     * @dev Only callable by the client when the agreement is active. 
+     * @dev Requires the client to have approved the contract to spend the budget amount.
+     */
+
     function fundEscrow() external onlyActive onlyClient nonReentrant {
         uint256 allowance = paymentToken.allowance(client, address(this));
 
@@ -87,6 +101,13 @@ contract ServiceAgreement is ReentrancyGuard {
         paymentToken.transferFrom(client, address(this), budget);
         emit AgreementFunded(client, budget);
     }
+
+    /**
+     * @notice Releases a specified amount of payment to the DAO.
+     * @dev Only callable by the DAO when the agreement is active.
+     * @param amount The amount to be released to the DAO.
+     * @dev If the total balance is depleted, the status is set to Completed.
+     */
 
     function releasePayment(
         uint256 amount
@@ -102,6 +123,12 @@ contract ServiceAgreement is ReentrancyGuard {
             status = Status.Completed;
         }
     }
+
+    /**
+     * @notice Cancels the service agreement and refunds the remaining balance to the client minus a penalty.
+     * @dev Only callable by the client when the agreement is active.
+     * @dev A penalty of 10% of the remaining balance is transferred to the DAO.
+     */
 
     function cancelAgreement() external onlyActive onlyClient nonReentrant {
         uint256 balance = paymentToken.balanceOf(address(this));
