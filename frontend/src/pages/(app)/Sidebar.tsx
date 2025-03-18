@@ -21,7 +21,7 @@ const Sidebar: React.FC<SidebarProps> = ({ className }) => {
   return (
     <div className="relative">
       <div
-        className={`absolute  lg:relative h-screen shadow bg-gray-900 transition-width duration-300 ${
+        className={`absolute  lg:relative h-screen shadow bg-gray-900/50 transition-width duration-300 ${
           isExpanded ? "w-64" : "w-16"
         } ${className}`}
       >
@@ -109,7 +109,7 @@ const Sidebar: React.FC<SidebarProps> = ({ className }) => {
       <div className="hidden md:block">
         <button
           onClick={() => setIsExpanded(!isExpanded)}
-          className={`absolute top-6 z-50 hidden md:flex items-center justify-center w-8 h-8 rounded-full bg-white/20 cursor-pointer shadow-lg hover:shadow-purple-500/30 transition-all ${
+          className={`absolute top-6 z-50 hidden md:flex items-center justify-center w-8 h-8 rounded-full bg-gray-800 cursor-pointer shadow-lg hover:shadow-purple-500/30 transition-all ${
             isExpanded ? "left-[236px]" : "left-[50px]"
           }`}
         >
