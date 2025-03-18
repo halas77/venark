@@ -71,7 +71,7 @@ const Services = () => {
           {campaigns.map((campaign) => (
             <Card
               key={campaign.id}
-              className="bg-gray-900 border-gray-800 hover:border-purple-500/30 transition-colors"
+              className="bg-gray-900/50 border-gray-900 hover:border-purple-500/30 transition-colors"
             >
               <div className="p-6 space-y-4">
                 {/* Campaign Header */}
@@ -147,7 +147,7 @@ const Services = () => {
 
         {/* Empty State */}
         {campaigns.length === 0 && (
-          <Card className="bg-gray-900 border-gray-800 text-center p-12">
+          <Card className="bg-gray-900/50 border-gray-900 text-center p-12">
             <div className="space-y-4">
               <FileText className="h-12 w-12 mx-auto text-gray-600" />
               <h3 className="text-xl font-semibold text-white">
