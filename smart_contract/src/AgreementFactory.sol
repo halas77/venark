@@ -18,15 +18,14 @@ contract AgreementFactory {
     event AgreementCreated(address indexed client, address agreement);
 
     // initialization
-    constructor(address _dao) {
+    constructor(address _dao, address _clientRegistery) {
         dao = _dao;
-        clientRegistry = new ClientRegistry();
+        clientRegistry = ClientRegistry(_clientRegistery);
         template = address(new ServiceAgreement(_dao));
     }
 
     // external functions
     function createAgreement(
-        address client,
         ERC20 paymentToken,
         uint256 budget
     ) external returns (address) {
@@ -35,9 +34,9 @@ contract AgreementFactory {
         }
         address clone = Clones.clone(template);
 
-        ServiceAgreement(clone).initialize(client, paymentToken, budget);
+        ServiceAgreement(clone).initialize(msg.sender, paymentToken, budget);
 
-        emit AgreementCreated(client, clone);
+        emit AgreementCreated(msg.sender, clone);
         return clone;
     }
 }

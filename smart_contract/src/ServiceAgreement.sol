@@ -85,7 +85,6 @@ contract ServiceAgreement is ReentrancyGuard {
         }
 
         paymentToken.transferFrom(client, address(this), budget);
-
         emit AgreementFunded(client, budget);
     }
 
