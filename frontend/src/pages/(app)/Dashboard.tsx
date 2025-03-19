@@ -70,7 +70,7 @@ const Dashboard = () => {
 
         {/* Quick Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <Card className="p-6 bg-gray-900/50 border-white/10">
+          <Card className="p-6 bg-gray-900/50 ">
             <div className="flex items-center gap-4">
               <div className="p-3 rounded-full bg-purple-500/20">
                 <Users className="h-6 w-6 text-purple-400" />
@@ -82,7 +82,7 @@ const Dashboard = () => {
             </div>
           </Card>
 
-          <Card className="p-6 bg-gray-900/50 border-white/10">
+          <Card className="p-6 bg-gray-900/50 ">
             <div className="flex items-center gap-4">
               <div className="p-3 rounded-full bg-pink-500/20">
                 <Zap className="h-6 w-6 text-pink-400" />
@@ -94,7 +94,7 @@ const Dashboard = () => {
             </div>
           </Card>
 
-          <Card className="p-6 bg-gray-900/50 border-white/10">
+          <Card className="p-6 bg-gray-900/50 ">
             <div className="flex items-center gap-4">
               <div className="p-3 rounded-full bg-blue-500/20">
                 <DollarSign className="h-6 w-6 text-blue-400" />
@@ -110,7 +110,7 @@ const Dashboard = () => {
         {/* Main Content Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Campaign Impact Section */}
-          <Card className="lg:col-span-2 p-6 bg-gray-900/50 border-white/10">
+          <Card className="lg:col-span-2 p-6 bg-gray-900/50 ">
             <div className="flex items-center justify-between mb-6">
               <h3 className="text-lg font-semibold text-white">
                 Campaign Impact
@@ -126,7 +126,7 @@ const Dashboard = () => {
           </Card>
 
           {/* Recent Activity */}
-          <Card className="p-6 bg-gray-900/50 border-white/10">
+          <Card className="p-6 bg-gray-900/50 ">
             <h3 className="text-lg font-semibold text-white mb-4">
               Recent Activity
             </h3>
@@ -173,7 +173,7 @@ const Dashboard = () => {
           </Card>
 
           {/* Performance Metrics */}
-          <Card className="p-6 bg-gray-900/50 border-white/10">
+          <Card className="p-6 bg-gray-900/50 ">
             <h3 className="text-lg font-semibold text-white mb-4">
               Platform Distribution
             </h3>
@@ -191,7 +191,7 @@ const Dashboard = () => {
           </Card>
 
           {/* Quick Actions */}
-          <Card className="p-6 bg-gray-900/50 border-white/10">
+          <Card className="p-6 bg-gray-900/50 ">
             <h3 className="text-lg font-semibold text-white mb-4">
               Quick Actions
             </h3>
