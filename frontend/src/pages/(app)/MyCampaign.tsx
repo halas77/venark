@@ -2,13 +2,7 @@ import Layout from "./Layout";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import {Link} from "react-router-dom"
-import {
-  DollarSign,
-  FileText,
-  Globe,
-  Link as LinkIcon,
-} from "lucide-react";
+import { DollarSign, FileText, Globe, Link as LinkIcon } from "lucide-react";
 
 const MyCampaign = () => {
   // Example data - replace with real data
@@ -64,12 +58,6 @@ const MyCampaign = () => {
               Manage your active marketing campaigns
             </p>
           </div>
-          <Link to={"/services"}>
-            <Button variant={"secondary"} className="gap-2">
-              <FileText className="h-4 w-4" />
-              New Campaign Agreement
-            </Button>
-          </Link>
         </div>
 
         {/* Campaigns Grid */}
