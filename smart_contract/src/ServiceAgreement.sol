@@ -1,144 +1,125 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
-
-import {ReentrancyGuard} from "../lib/openzeppelin-contracts/contracts/utils/ReentrancyGuard.sol";
 import {ERC20} from "../lib/openzeppelin-contracts/contracts/token/ERC20/ERC20.sol";
+import {EIP712} from "../lib/openzeppelin-contracts/contracts/utils/cryptography/EIP712.sol";
+import {ReentrancyGuard} from "../lib/openzeppelin-contracts/contracts/utils/ReentrancyGuard.sol";
+import {SignatureChecker} from "../lib/openzeppelin-contracts/contracts/utils/cryptography/SignatureChecker.sol";
 
-contract ServiceAgreement is ReentrancyGuard {
-    // state variables
+contract ServiceAgreement is EIP712, ReentrancyGuard {
+    // enums
     enum Status {
         Active,
         Completed,
         Canceled
     }
 
+    // structs
+    struct Milestone {
+        bytes32 descriptionHash;
+        uint256 paymentAmount;
+        address approvedAgent;
+        bool isApproved;
+    }
+
+    // state varibles
     address public client;
     ERC20 public paymentToken;
-    uint256 public budget;
-    // string public deliverablesCID;
+    Milestone[] public milestones;
     Status public status;
-    address public dao;
 
-    // errors
-
-    error ServiceAgreement__AlreadyInitialized();
-    error ServiceAgreement__AgreementNotActive();
-    error ServiceAgreement__InsufficientAllowance();
-    error ServiceAgreement__OnlyDAO();
-    error ServiceAgreement__OnlyClient();
-    error ServiceAgreement__NotActive();
-    error ServiceAgreement__ExceedsBudget();
+    // EIP-712 Domain for AI agent signatures
+    bytes32 private constant _MILESTONE_TYPEHASH =
+        keccak256("ApproveMilestone(uint256 agreementId,uint256 milestoneId)");
 
     // events
-    event AgreementFunded(address indexed client, uint256 budget);
-    event PaymentReleased(address to, uint256 amount);
-    event AgreementCanceled(uint256 refundAmount, uint256 penalty);
+    event MilestoneApproved(uint256 indexed milestoneId, address agent);
+    event PaymentReleased(uint256 amount, address agent);
+
+    // errors
+    error ServiceAgreement__MilestoneAlreadyApproved();
+    error ServiceAgreement__InvalidSignature();
+    error ServiceAgreement__InvalidCaller();
+    error ServiceAgreement__InvalidMilestoneId();
 
     // modifiers
-
-    modifier onlyClient() {
-        if (msg.sender != client) {
-            revert ServiceAgreement__OnlyClient();
-        }
-        _;
-    }
-    modifier onlyDAO() {
-        if (msg.sender != dao) {
-            revert ServiceAgreement__OnlyDAO();
-        }
-        _;
-    }
-
     modifier onlyActive() {
-        if (status != Status.Active) {
-            revert ServiceAgreement__NotActive();
-        }
+        require(status == Status.Active, "Agreement inactive");
         _;
     }
 
-    // initailization
-    constructor(address _dao) {
-        dao = _dao;
-    }
+    // initialization
+    constructor() EIP712("Venark", "1.0") {}
 
-    // external functions
-    /**
-     * @notice Initializes the service agreement with the client, payment token, and budget.
-     * @dev This function can only be called once. Sets the status to Active.
-     * @param _client The address of the client.
-     * @param _paymentToken The ERC20 token used for payments.
-     * @param _budget The total budget for the service agreement.
-     */
+    // ======== CORE FUNCTIONS ========
 
     function initialize(
         address _client,
         ERC20 _paymentToken,
-        uint256 _budget // string calldata _deliverablesCID
+        Milestone[] memory _milestone
     ) external {
         if (client != address(0)) {
-            revert ServiceAgreement__AlreadyInitialized();
+            revert ServiceAgreement__InvalidCaller();
         }
-
         client = _client;
         paymentToken = _paymentToken;
-        budget = _budget;
+        for (uint256 i = 0; i < _milestone.length; i++) {
+            milestones.push(_milestone[i]);
+        }
         status = Status.Active;
     }
 
-    /**
-     * @notice Funds the escrow with the budget amount.
-     * @dev Only callable by the client when the agreement is active. 
-     * @dev Requires the client to have approved the contract to spend the budget amount.
-     */
-
-    function fundEscrow() external onlyActive onlyClient nonReentrant {
-        uint256 allowance = paymentToken.allowance(client, address(this));
-
-        if (allowance < budget) {
-            revert ServiceAgreement__InsufficientAllowance();
+    function approveMilestone(
+        uint256 milestoneId,
+        bytes calldata agentSignature
+    ) public onlyActive nonReentrant {
+        if (milestoneId < 0 || milestoneId >= milestones.length) {
+            revert ServiceAgreement__InvalidMilestoneId();
         }
 
-        paymentToken.transferFrom(client, address(this), budget);
-        emit AgreementFunded(client, budget);
-    }
+        Milestone storage milestone = milestones[milestoneId];
 
-    /**
-     * @notice Releases a specified amount of payment to the DAO.
-     * @dev Only callable by the DAO when the agreement is active.
-     * @param amount The amount to be released to the DAO.
-     * @dev If the total balance is depleted, the status is set to Completed.
-     */
-
-    function releasePayment(
-        uint256 amount
-    ) external onlyActive onlyDAO nonReentrant {
-        if (amount > budget) {
-            revert ServiceAgreement__ExceedsBudget();
+        if (milestone.isApproved) {
+            revert ServiceAgreement__MilestoneAlreadyApproved();
         }
 
-        paymentToken.transfer(dao, amount);
-        emit PaymentReleased(dao, amount);
+        bytes32 digest = _hashTypedDataV4(
+            keccak256(
+                abi.encode(_MILESTONE_TYPEHASH, address(this), milestoneId)
+            )
+        );
 
-        if (paymentToken.balanceOf(address(this)) == 0) {
+        if (
+            !SignatureChecker.isValidSignatureNow(
+                client,
+                digest,
+                agentSignature
+            )
+        ) {
+            revert ServiceAgreement__InvalidSignature();
+        }
+
+        milestone.isApproved = true;
+        paymentToken.transfer(milestone.approvedAgent, milestone.paymentAmount);
+
+        emit MilestoneApproved(milestoneId, milestone.approvedAgent);
+        emit PaymentReleased(milestone.paymentAmount, milestone.approvedAgent);
+
+        if (milestoneId == milestones.length - 1) {
             status = Status.Completed;
         }
     }
 
-    /**
-     * @notice Cancels the service agreement and refunds the remaining balance to the client minus a penalty.
-     * @dev Only callable by the client when the agreement is active.
-     * @dev A penalty of 10% of the remaining balance is transferred to the DAO.
-     */
-
-    function cancelAgreement() external onlyActive onlyClient nonReentrant {
-        uint256 balance = paymentToken.balanceOf(address(this));
-        uint256 penality = (balance * 10) / 100;
-
-        paymentToken.transfer(dao, penality);
-        paymentToken.transfer(client, balance - penality);
+    function cancelAgreement() external onlyActive nonReentrant {
+        if (msg.sender != client) {
+            revert ServiceAgreement__InvalidCaller();
+        }
 
         status = Status.Canceled;
-
-        emit AgreementCanceled(balance - penality, penality);
+        uint256 balance = paymentToken.balanceOf(address(this));
+        paymentToken.transfer(client, (balance * 90) / 100);
+        paymentToken.transfer(
+            milestones[0].approvedAgent,
+            (balance * 10) / 100
+        );
     }
 }
