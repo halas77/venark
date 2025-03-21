@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import exampleRoutes from "./routes/example.r";
+import creativeRoutes from "./routes/creative.r";
 
 dotenv.config();
 
@@ -14,6 +15,7 @@ app.use(express.json());
 
 // Routes
 app.use("/api/example", exampleRoutes);
+app.use("/api/generate-content", creativeRoutes);
 
 // Start Server
 app.listen(PORT, () => {
