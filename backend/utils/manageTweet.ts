@@ -7,14 +7,26 @@ const twitterClient = new TwitterApi({
   accessSecret: process.env.X_ACCESS_SECRET,
 });
 
-
 export const tweetContent = async (tweetText: any) => {
   try {
-    const tweetResponse = await twitterClient.v2.tweet(
-      tweetText);
+    const tweetResponse = await twitterClient.v2.tweet(tweetText);
     return tweetResponse;
   } catch (error) {
     console.error("Error posting tweet:", error);
     throw error;
+  }
+};
+
+export const fetchRecentTweets = async () => {
+  try {
+    const tweets = await twitterClient.v2.userTimeline("", {
+      max_results: 5,
+      "tweet.fields": "public_metrics",
+    });
+
+    return tweets;
+  } catch (error) {
+    console.error("Error fetching tweets:", error);
+    return error;
   }
 };

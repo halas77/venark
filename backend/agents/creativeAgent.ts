@@ -6,13 +6,13 @@ import { createReactAgent } from "@langchain/langgraph/prebuilt";
 
 const agentTools = [
   new TavilySearchResults({
-    apiKey: "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",
+    apiKey: process.env.TAVILY_API_KEY,
     maxResults: 3,
   }),
 ];
 
 const agentModel = new ChatGoogleGenerativeAI({
-  apiKey: "AIzaSyDvIt9oaY0jtJgcc2OnUsBf0eNRDAAAJ8k",
+  apiKey: process.env.GOOGLE_API_KEY,
   temperature: 0.8,
   model: "gemini-2.0-flash",
 });
@@ -26,7 +26,7 @@ const agent = createReactAgent({
 
 const getTrendingTopics = async () => {
   const search = new TavilySearchResults({
-    apiKey: "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",
+    apiKey: process.env.TAVILY_API_KEY,
     maxResults: 3,
   });
   const result = await search.invoke(

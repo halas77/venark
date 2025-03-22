@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { generateContent } from "../agents/creativeAgent";
-import { tweetContent } from "../agents/tweet";
+import { tweetContent } from "../utils/manageTweet";
 
 export const creativeController = async (req: Request, res: Response) => {
   const { companyDesc, companyLink, companyName } = req.body;
