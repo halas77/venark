@@ -1,30 +1,9 @@
 import { TavilySearchResults } from "@langchain/community/tools/tavily_search";
-import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
-import { MemorySaver } from "@langchain/langgraph";
 import { HumanMessage } from "@langchain/core/messages";
-import { createReactAgent } from "@langchain/langgraph/prebuilt";
+import { agent } from "../utils/config";
+import { analyzeTweets } from "./analyzerAgent";
 
-const agentTools = [
-  new TavilySearchResults({
-    apiKey: process.env.TAVILY_API_KEY,
-    maxResults: 3,
-  }),
-];
-
-const agentModel = new ChatGoogleGenerativeAI({
-  apiKey: process.env.GOOGLE_API_KEY,
-  temperature: 0.8,
-  model: "gemini-2.0-flash",
-});
-
-const agentCheckpointer = new MemorySaver();
-const agent = createReactAgent({
-  llm: agentModel,
-  tools: agentTools,
-  checkpointer: agentCheckpointer,
-});
-
-const getTrendingTopics = async () => {
+export const getTrendingTopics = async () => {
   const search = new TavilySearchResults({
     apiKey: process.env.TAVILY_API_KEY,
     maxResults: 3,
@@ -39,15 +18,17 @@ const getTrendingTopics = async () => {
 export const generateContent = async (
   companyDesc: string,
   companyLink: string,
-  companyName: string
+  companyName: string,
+  feedback?: any
 ) => {
   const trends = await getTrendingTopics();
-
   const response = await agent.invoke(
     {
       messages: [
         new HumanMessage(
-          `Generate 1 high-quality, engaging Twitter post for the following marketing campaign.
+          `Generate 1 high-quality, engaging Twitter post for the following marketing campaign,If there is any feed back here generate a better tweet based on feedback
+          
+          Feedback: ${feedback}
 
           Company Name: ${companyName}  
           Company Website: ${companyLink}  

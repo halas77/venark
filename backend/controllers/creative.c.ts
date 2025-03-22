@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { generateContent } from "../agents/creativeAgent";
+import { generateContent } from "../agents/creatorAgent";
 import { tweetContent } from "../utils/manageTweet";
 
 export const creativeController = async (req: Request, res: Response) => {

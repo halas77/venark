@@ -1,5 +1,9 @@
 import { Request, Response } from "express";
+import { fetchRecentTweets } from "../utils/manageTweet";
+import { analyzeTweets } from "../agents/analyzerAgent";
 
-export const anaylzeController = (req: Request, res: Response) => {
-  res.json({ message: "Hello from example route!, yes am here" });
+export const anaylzeController = async (req: Request, res: Response) => {
+  const tweets = await fetchRecentTweets();
+  const response = await analyzeTweets(tweets);
+  res.json({ message: response });
 };
