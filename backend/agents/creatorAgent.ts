@@ -4,7 +4,7 @@ import { agent } from "../utils/config";
 
 export const getTrendingTopics = async () => {
   const search = new TavilySearchResults({
-    apiKey: process.env.TAVILY_API_KEY,
+    apiKey: "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",
     maxResults: 3,
   });
   const result = await search.invoke(

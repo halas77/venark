@@ -26,14 +26,12 @@ export const creativeController = async (req: Request, res: Response) => {
     const memeResponse = await generateMeme(formattedGeneratedContent);
 
     // Post Tweet
-    // const tweetResponse = await tweetContent(generatedContent);
+    await tweetContent(generatedContent);
 
     // Upload to IPFS
-
     let storedData: { [key: string]: CompanyData } = {};
     let updatedData;
 
-    previousIpfsHash = "QmWmLAHqpsgpBGz4cgCELb2XivtAZoKcUajqafLa6UhUVk";
 
     if (previousIpfsHash) {
       storedData = await fetchFromIPFS(previousIpfsHash);
