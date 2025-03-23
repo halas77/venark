@@ -12,5 +12,5 @@ export const generateMeme = async (prompt: string): Promise<string> => {
   const buffer = await response.arrayBuffer();
   const filePath = `public/meme-${Date.now()}.png`;
   fs.writeFileSync(filePath, Buffer.from(buffer));
-  return URL.createObjectURL(response);
+  return filePath;
 };
