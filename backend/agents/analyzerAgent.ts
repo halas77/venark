@@ -19,12 +19,11 @@ export const analyzeTweets = async (tweets: any) => {
     {
       messages: [
         new HumanMessage(
-          `
+        `
         Analyze the following tweets based on engagement (likes, retweets, replies).
         Suggest improvements for future tweets. Highlight better wording, call-to-actions, or trending topics to use.
 
         Tweets: ${tweetTexts}
-
 
         Incorporate the latest social media trends: ${trends}.  
       `

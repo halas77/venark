@@ -1,7 +1,6 @@
 import { TavilySearchResults } from "@langchain/community/tools/tavily_search";
 import { HumanMessage } from "@langchain/core/messages";
 import { agent } from "../utils/config";
-import { analyzeTweets } from "./analyzerAgent";
 
 export const getTrendingTopics = async () => {
   const search = new TavilySearchResults({
