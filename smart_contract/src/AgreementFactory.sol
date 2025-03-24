@@ -4,7 +4,7 @@ import {Clones} from "../lib/openzeppelin-contracts/contracts/proxy/Clones.sol";
 import {ERC20} from "../lib/openzeppelin-contracts/contracts/token/ERC20/ERC20.sol";
 import {ServiceAgreement} from "./ServiceAgreement.sol";
 // import {ClientRegistry} from "./ClientRegistry.sol";
-import {IERC6551Registry} from "./IERC6551Registry.sol";
+import {IERC6551Registry} from "./interfaces/IERC6551Registry.sol";
 
 contract AgreementFactory {
     using Clones for address;
@@ -12,6 +12,8 @@ contract AgreementFactory {
     address public template;
     IERC6551Registry public immutable erc6551Registry;
     address public immutable agentNFT;
+
+    mapping(string => string) public ipfsHashes;
 
     event AgreementDeployed(address indexed client, address agreement);
 
@@ -45,5 +47,12 @@ contract AgreementFactory {
 
         emit AgreementDeployed(client, agreement);
         return agreement;
+    }
+
+    function setIPFSHash(
+        string memory companyName,
+        string memory ipfsHash
+    ) external {
+        ipfsHashes[companyName] = ipfsHash;
     }
 }

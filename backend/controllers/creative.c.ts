@@ -12,7 +12,7 @@ let previousIpfsHash: string | null = null;
 
 export const creativeController = async (req: Request, res: Response) => {
   try {
-    const { companyDesc, companyLink, companyName } = req.body;
+    const { companyDesc, companyLink, companyName, account } = req.body;
 
     // Generate content
     const generatedContent = await generateContent(
@@ -32,7 +32,6 @@ export const creativeController = async (req: Request, res: Response) => {
     let storedData: { [key: string]: CompanyData } = {};
     let updatedData;
 
-
     if (previousIpfsHash) {
       storedData = await fetchFromIPFS(previousIpfsHash);
     }
@@ -44,6 +43,7 @@ export const creativeController = async (req: Request, res: Response) => {
     } else {
       updatedData = {
         ...storedData,
+        account: account,
         [companyName]: {
           tweets: [formattedGeneratedContent],
           memes: [memeResponse],
@@ -54,6 +54,9 @@ export const creativeController = async (req: Request, res: Response) => {
     // Upload updated data to IPFS
     const newIpfsHash = await uploadToIPFS(updatedData);
     previousIpfsHash = newIpfsHash;
+
+    // send the result onchian
+    // the newIpfsHash has to be stored on chian
 
     res.json({
       message: formattedGeneratedContent,
