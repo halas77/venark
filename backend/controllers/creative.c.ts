@@ -3,6 +3,8 @@ import { generateContent } from "../agents/creatorAgent";
 import { generateMeme } from "../agents/memeGeneratorAgent";
 import { tweetContent } from "../utils/manageTweet";
 import { fetchFromIPFS, uploadToIPFS } from "../utils/manageIPFS";
+import { ethers } from "ethers";
+
 interface CompanyData {
   tweets: any[];
   memes: any[];

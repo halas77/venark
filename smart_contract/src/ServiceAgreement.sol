@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
-import {ERC20} from "../lib/openzeppelin-contracts/contracts/token/ERC20/ERC20.sol";
-import {EIP712} from "../lib/openzeppelin-contracts/contracts/utils/cryptography/EIP712.sol";
+import {IERC20} from "../lib/openzeppelin-contracts/contracts/interfaces/IERC20.sol";
 import {ReentrancyGuard} from "../lib/openzeppelin-contracts/contracts/utils/ReentrancyGuard.sol";
 import {SignatureChecker} from "../lib/openzeppelin-contracts/contracts/utils/cryptography/SignatureChecker.sol";
+import {AgreementFactory} from "./AgreementFactory.sol";
 
-contract ServiceAgreement is EIP712, ReentrancyGuard {
+contract ServiceAgreement is ReentrancyGuard {
     // enums
     enum Status {
         Active,
@@ -17,15 +17,16 @@ contract ServiceAgreement is EIP712, ReentrancyGuard {
     struct Milestone {
         bytes32 descriptionHash;
         uint256 paymentAmount;
-        address approvedAgent;
         bool isApproved;
     }
 
     // state varibles
     address public client;
-    ERC20 public paymentToken;
+    address public paymentToken;
     Milestone[] public milestones;
     Status public status;
+    address public dao;
+    uint256 public budget;
 
     // EIP-712 Domain for AI agent signatures
     bytes32 private constant _MILESTONE_TYPEHASH =
@@ -40,6 +41,7 @@ contract ServiceAgreement is EIP712, ReentrancyGuard {
     error ServiceAgreement__InvalidSignature();
     error ServiceAgreement__InvalidCaller();
     error ServiceAgreement__InvalidMilestoneId();
+    error ServiceAgreement__PaymentFailed();
 
     // modifiers
     modifier onlyActive() {
@@ -48,20 +50,25 @@ contract ServiceAgreement is EIP712, ReentrancyGuard {
     }
 
     // initialization
-    constructor() EIP712("Venark", "1.0") {}
+    constructor() {}
 
     // ======== CORE FUNCTIONS ========
 
     function initialize(
+        address _dao,
         address _client,
-        ERC20 _paymentToken,
+        address _paymentToken,
+        uint256 _budget,
         Milestone[] memory _milestone
     ) external {
         if (client != address(0)) {
             revert ServiceAgreement__InvalidCaller();
         }
+        dao = _dao;
         client = _client;
         paymentToken = _paymentToken;
+        budget = _budget;
+
         for (uint256 i = 0; i < _milestone.length; i++) {
             milestones.push(_milestone[i]);
         }
@@ -69,42 +76,25 @@ contract ServiceAgreement is EIP712, ReentrancyGuard {
     }
 
     function approveMilestone(
-        uint256 milestoneId,
-        bytes calldata agentSignature
+        uint256 _milestoneId
     ) public onlyActive nonReentrant {
-        if (milestoneId < 0 || milestoneId >= milestones.length) {
+        if (_milestoneId < 0 || _milestoneId >= milestones.length) {
             revert ServiceAgreement__InvalidMilestoneId();
         }
 
-        Milestone storage milestone = milestones[milestoneId];
+        Milestone storage milestone = milestones[_milestoneId];
 
         if (milestone.isApproved) {
             revert ServiceAgreement__MilestoneAlreadyApproved();
         }
 
-        bytes32 digest = _hashTypedDataV4(
-            keccak256(
-                abi.encode(_MILESTONE_TYPEHASH, address(this), milestoneId)
-            )
-        );
-
-        if (
-            !SignatureChecker.isValidSignatureNow(
-                client,
-                digest,
-                agentSignature
-            )
-        ) {
-            revert ServiceAgreement__InvalidSignature();
-        }
-
         milestone.isApproved = true;
-        paymentToken.transfer(milestone.approvedAgent, milestone.paymentAmount);
+        IERC20(paymentToken).transfer(dao, milestone.paymentAmount);
 
-        emit MilestoneApproved(milestoneId, milestone.approvedAgent);
-        emit PaymentReleased(milestone.paymentAmount, milestone.approvedAgent);
+        emit MilestoneApproved(_milestoneId, dao);
+        emit PaymentReleased(milestone.paymentAmount, dao);
 
-        if (milestoneId == milestones.length - 1) {
+        if (_milestoneId == milestones.length - 1) {
             status = Status.Completed;
         }
     }
@@ -115,11 +105,12 @@ contract ServiceAgreement is EIP712, ReentrancyGuard {
         }
 
         status = Status.Canceled;
-        uint256 balance = paymentToken.balanceOf(address(this));
-        paymentToken.transfer(client, (balance * 90) / 100);
-        paymentToken.transfer(
-            milestones[0].approvedAgent,
-            (balance * 10) / 100
-        );
+        uint256 balance = IERC20(paymentToken).balanceOf(address(this));
+        IERC20(paymentToken).transfer(client, (balance * 90) / 100);
+        IERC20(paymentToken).transfer(dao, (balance * 10) / 100);
+    }
+
+    function getMilestonesLength() external view returns (uint256) {
+        return milestones.length;
     }
 }
