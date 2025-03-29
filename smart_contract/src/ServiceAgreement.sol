@@ -2,7 +2,6 @@
 pragma solidity ^0.8.20;
 import {IERC20} from "../lib/openzeppelin-contracts/contracts/interfaces/IERC20.sol";
 import {ReentrancyGuard} from "../lib/openzeppelin-contracts/contracts/utils/ReentrancyGuard.sol";
-import {SignatureChecker} from "../lib/openzeppelin-contracts/contracts/utils/cryptography/SignatureChecker.sol";
 import {AgreementFactory} from "./AgreementFactory.sol";
 
 contract ServiceAgreement is ReentrancyGuard {
@@ -15,7 +14,6 @@ contract ServiceAgreement is ReentrancyGuard {
 
     // structs
     struct Milestone {
-        bytes32 descriptionHash;
         uint256 paymentAmount;
         bool isApproved;
     }
@@ -28,10 +26,6 @@ contract ServiceAgreement is ReentrancyGuard {
     address public dao;
     uint256 public budget;
 
-    // EIP-712 Domain for AI agent signatures
-    bytes32 private constant _MILESTONE_TYPEHASH =
-        keccak256("ApproveMilestone(uint256 agreementId,uint256 milestoneId)");
-
     // events
     event MilestoneApproved(uint256 indexed milestoneId, address agent);
     event PaymentReleased(uint256 amount, address agent);
@@ -42,15 +36,14 @@ contract ServiceAgreement is ReentrancyGuard {
     error ServiceAgreement__InvalidCaller();
     error ServiceAgreement__InvalidMilestoneId();
     error ServiceAgreement__PaymentFailed();
+    error ServiceAgreement__AreadyInitialized();
+    error ServiceAgreement__ContractNotInitilized();
 
     // modifiers
     modifier onlyActive() {
         require(status == Status.Active, "Agreement inactive");
         _;
     }
-
-    // initialization
-    constructor() {}
 
     // ======== CORE FUNCTIONS ========
 
@@ -62,7 +55,7 @@ contract ServiceAgreement is ReentrancyGuard {
         Milestone[] memory _milestone
     ) external {
         if (client != address(0)) {
-            revert ServiceAgreement__InvalidCaller();
+            revert ServiceAgreement__AreadyInitialized();
         }
         dao = _dao;
         client = _client;
@@ -73,6 +66,13 @@ contract ServiceAgreement is ReentrancyGuard {
             milestones.push(_milestone[i]);
         }
         status = Status.Active;
+    }
+
+    function depositPayment() external onlyActive nonReentrant {
+        if (client == address(0)) {
+            revert ServiceAgreement__ContractNotInitilized();
+        }
+        IERC20(paymentToken).transferFrom(client, address(this), budget);
     }
 
     function approveMilestone(
@@ -88,8 +88,8 @@ contract ServiceAgreement is ReentrancyGuard {
             revert ServiceAgreement__MilestoneAlreadyApproved();
         }
 
-        milestone.isApproved = true;
         IERC20(paymentToken).transfer(dao, milestone.paymentAmount);
+        milestone.isApproved = true;
 
         emit MilestoneApproved(_milestoneId, dao);
         emit PaymentReleased(milestone.paymentAmount, dao);
@@ -108,9 +108,5 @@ contract ServiceAgreement is ReentrancyGuard {
         uint256 balance = IERC20(paymentToken).balanceOf(address(this));
         IERC20(paymentToken).transfer(client, (balance * 90) / 100);
         IERC20(paymentToken).transfer(dao, (balance * 10) / 100);
-    }
-
-    function getMilestonesLength() external view returns (uint256) {
-        return milestones.length;
     }
 }

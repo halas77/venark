@@ -20,18 +20,15 @@ contract testContracts is Test {
 
     function setUp() public {
         clientRegistry = new ClientRegistry();
-        agreementFactory = new AgreementFactory();
+        agreementFactory = new AgreementFactory(address(clientRegistry));
         paymentToken = new ERC20Mock();
         agreement = new ServiceAgreement();
-
         paymentToken.mint(user, 10000000000 ether);
     }
 
     function testOnboardUser() public {
         vm.prank(user);
-
         clientRegistry.onboardClient();
-
         bool result = clientRegistry.isOnboarded(user);
         assertTrue(result, "The user must be onboarded");
     }
@@ -41,13 +38,11 @@ contract testContracts is Test {
             memory milestones = new ServiceAgreement.Milestone[](2);
 
         milestones[0] = ServiceAgreement.Milestone({
-            descriptionHash: keccak256(abi.encodePacked("Milestone 1")),
             paymentAmount: 10 ether,
             isApproved: false
         });
 
         milestones[1] = ServiceAgreement.Milestone({
-            descriptionHash: keccak256(abi.encodePacked("Milestone 2")),
             paymentAmount: 20 ether,
             isApproved: false
         });
@@ -55,9 +50,12 @@ contract testContracts is Test {
         paymentToken.mint(user2, 200 ether);
 
         vm.prank(user2);
+        clientRegistry.onboardClient();
+
+        vm.prank(user2);
         paymentToken.approve(address(agreementFactory), 150 ether);
 
-        vm.prank(user1);
+        vm.prank(user2);
         address agreement2 = agreementFactory.createAgreement(
             user1,
             user2,
@@ -66,14 +64,10 @@ contract testContracts is Test {
             milestones
         );
 
-        uint256 len = ServiceAgreement(agreement2).getMilestonesLength();
-
         assertTrue(
             agreement2 != address(0),
             "Agreement address should not be zero"
         );
-
-        assertEq(len, 2, "The milestome must be 2");
     }
 
     function testSetIPFSHash() public {
@@ -87,18 +81,16 @@ contract testContracts is Test {
         assertEq(companyHash, comapny);
     }
 
-    function testApproveMilestone() public {
-         ServiceAgreement.Milestone[]
+    function testDepositFund() public {
+        ServiceAgreement.Milestone[]
             memory milestones = new ServiceAgreement.Milestone[](2);
 
         milestones[0] = ServiceAgreement.Milestone({
-            descriptionHash: keccak256(abi.encodePacked("Milestone 1")),
             paymentAmount: 10 ether,
             isApproved: false
         });
 
         milestones[1] = ServiceAgreement.Milestone({
-            descriptionHash: keccak256(abi.encodePacked("Milestone 2")),
             paymentAmount: 20 ether,
             isApproved: false
         });
@@ -106,28 +98,79 @@ contract testContracts is Test {
         paymentToken.mint(user2, 200 ether);
 
         vm.prank(user2);
-        paymentToken.approve(address(agreementFactory), 100 ether);
+        clientRegistry.onboardClient();
 
-        vm.prank(user1);
-        address agreement2 = agreementFactory.createAgreement(
+        vm.prank(user2);
+        address myAgreement = agreementFactory.createAgreement(
             user1,
             user2,
             address(paymentToken),
             100 ether,
             milestones
         );
+        vm.prank(user2);
+        paymentToken.approve(myAgreement, 100 ether);
 
-        // ✅ No need to transfer manually, the factory already does it
+        ServiceAgreement(myAgreement).depositPayment();
+
+        uint256 balance = paymentToken.balanceOf(myAgreement);
+
+        assertEq(balance, 100 ether, "The contract must recieve fund.");
+    }
+
+    function testApproveMilestone() public {
+        ServiceAgreement.Milestone[]
+            memory milestones = new ServiceAgreement.Milestone[](2);
+
+        milestones[0] = ServiceAgreement.Milestone({
+            paymentAmount: 10 ether,
+            isApproved: false
+        });
+
+        milestones[1] = ServiceAgreement.Milestone({
+            paymentAmount: 20 ether,
+            isApproved: false
+        });
+
+        paymentToken.mint(user2, 200 ether);
 
         vm.prank(user2);
-        ServiceAgreement(agreement2).approveMilestone(0);
+        clientRegistry.onboardClient();
 
-        (, uint256 paymentAmount, bool isApproved) = ServiceAgreement(
-            agreement2
-        ).milestones(0);
+        vm.prank(user2);
+        address myAgreement = agreementFactory.createAgreement(
+            user1,
+            user2,
+            address(paymentToken),
+            100 ether,
+            milestones
+        );
+        vm.prank(user2);
+        paymentToken.approve(myAgreement, 100 ether);
 
-        assert(isApproved);
-        assertEq(paymentAmount, 10 ether);
-        assertEq(paymentToken.balanceOf(user1), 10 ether);
+        ServiceAgreement(myAgreement).depositPayment();
+        ServiceAgreement(myAgreement).approveMilestone(0);
+
+        (
+            uint256 retrivedPaymentAmount,
+            bool retrivedIsApproved
+        ) = ServiceAgreement(myAgreement).milestones(0);
+
+        uint256 balance = paymentToken.balanceOf(myAgreement);
+        uint256 daoBalance = paymentToken.balanceOf(user1);
+
+        assertEq(
+            balance,
+            100 ether - retrivedPaymentAmount,
+            "The contrat must approve the payment"
+        );
+
+        assertEq(
+            daoBalance,
+            retrivedPaymentAmount,
+            "The dao should accept the milestone fund."
+        );
+
+        assertTrue(retrivedIsApproved, "The milestone status must be true");
     }
 }

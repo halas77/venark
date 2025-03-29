@@ -3,20 +3,27 @@ pragma solidity ^0.8.20;
 import {Clones} from "../lib/openzeppelin-contracts/contracts/proxy/Clones.sol";
 import {IERC20} from "../lib/openzeppelin-contracts/contracts/interfaces/IERC20.sol";
 import {ServiceAgreement} from "./ServiceAgreement.sol";
-
-// import {ClientRegistry} from "./ClientRegistry.sol";
+import {ClientRegistry} from "./ClientRegistry.sol";
 
 contract AgreementFactory {
     using Clones for address;
 
+    // state varibles
     address public template;
+    ClientRegistry clientRegistry;
 
+    // mapping
     mapping(string => string) public ipfsHashes;
 
+    // error
+    error AgreementFactory__UserNotFound();
+
+    // events
     event AgreementDeployed(address indexed client, address agreement);
 
-    constructor() {
+    constructor(address _clientRegistry) {
         template = address(new ServiceAgreement());
+        clientRegistry = ClientRegistry(_clientRegistry);
     }
 
     function createAgreement(
@@ -26,6 +33,10 @@ contract AgreementFactory {
         uint256 _budget,
         ServiceAgreement.Milestone[] memory milestones
     ) external returns (address) {
+        if (!clientRegistry.isOnboarded(msg.sender)) {
+            revert AgreementFactory__UserNotFound();
+        }
+
         address agreement = template.clone();
         ServiceAgreement(agreement).initialize(
             dao,
@@ -34,16 +45,6 @@ contract AgreementFactory {
             _budget,
             milestones
         );
-
-        bool success = IERC20(_paymentToken).transferFrom(
-            msg.sender,
-            agreement,
-            _budget
-        );
-
-        if (!success) {
-            revert("Payment Failed.");
-        }
 
         emit AgreementDeployed(client, agreement);
         return agreement;
