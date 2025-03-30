@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
-import {Clones} from "../lib/openzeppelin-contracts/contracts/proxy/Clones.sol";
-import {IERC20} from "../lib/openzeppelin-contracts/contracts/interfaces/IERC20.sol";
+import {Clones} from "@openzeppelin/contracts/proxy/Clones.sol";
+import {IERC20} from "@openzeppelin/contracts/interfaces/IERC20.sol";
 import {ServiceAgreement} from "./ServiceAgreement.sol";
 import {ClientRegistry} from "./ClientRegistry.sol";
 

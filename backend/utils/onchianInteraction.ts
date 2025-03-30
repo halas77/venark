@@ -7,3 +7,4 @@ const wallet = new ethers.Wallet(aiAgentWallet.privateKey, provider);
 export const getFromOnchain = async () => {
     
 };
+
