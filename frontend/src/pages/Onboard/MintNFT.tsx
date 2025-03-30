@@ -15,8 +15,8 @@ import {
 
 import { useEffect } from "react";
 import {
-  ONBOARD_CONTARCT_ADDRESS,
-  ONBOARD_CONTRACT_ABI,
+  CLIENT_REGISTRY_CONTRACT_ADDRESS,
+  CLIENT_REGISTRY_ABI,
 } from "@/utils/constants";
 import { useAppKitAccount } from "@reown/appkit/react";
 import { useNavigate } from "react-router-dom";
@@ -42,16 +42,16 @@ const MintNFT = ({ setActiveStep }: MintNFTProps) => {
   const { address } = useAppKitAccount();
 
   const { data: isOnboard } = useReadContract({
-    abi: ONBOARD_CONTRACT_ABI,
-    address: ONBOARD_CONTARCT_ADDRESS,
+    abi: CLIENT_REGISTRY_ABI,
+    address: CLIENT_REGISTRY_CONTRACT_ADDRESS,
     functionName: "isOnboarded",
     args: [address],
   });
 
   const handleMintNFT = async () => {
     writeContract({
-      address: ONBOARD_CONTARCT_ADDRESS,
-      abi: ONBOARD_CONTRACT_ABI,
+      address: CLIENT_REGISTRY_CONTRACT_ADDRESS,
+      abi: CLIENT_REGISTRY_ABI,
       functionName: "onboardClient",
     });
   };

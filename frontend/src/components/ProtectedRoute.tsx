@@ -2,8 +2,8 @@ import { Outlet } from "react-router-dom";
 import { useAppKitAccount } from "@reown/appkit/react";
 import { useReadContract } from "wagmi";
 import {
-  ONBOARD_CONTARCT_ADDRESS,
-  ONBOARD_CONTRACT_ABI,
+  CLIENT_REGISTRY_CONTRACT_ADDRESS,
+  CLIENT_REGISTRY_ABI,
 } from "@/utils/constants";
 import PageLoader from "./Loading";
 import Error from "./Error";
@@ -16,12 +16,11 @@ const ProtectedRoute = () => {
     error,
     isPending,
   } = useReadContract({
-    abi: ONBOARD_CONTRACT_ABI,
-    address: ONBOARD_CONTARCT_ADDRESS,
+    abi: CLIENT_REGISTRY_ABI,
+    address: CLIENT_REGISTRY_CONTRACT_ADDRESS,
     functionName: "isOnboarded",
     args: [address],
   });
-
 
   if (isPending) {
     return <PageLoader />;

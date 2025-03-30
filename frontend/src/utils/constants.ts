@@ -1,17 +1,24 @@
-import onboardABI from "./abis/client-registry.json";
-import agreementABI from "./abis/service-agreement.json";
+import ClientRegistryABI from "./ABIs/ClientRegistry.json";
+import AgreementFactoryABI from "./ABIs/AgreementFactory.json"
+import ServiceAgreementABI from "./ABIs/ServiceAgreement.json";
 import { Flag, LayoutDashboard, CircleHelp, Crown } from "lucide-react";
 import { GitBranch, Mail } from "lucide-react";
 
-// onboard
-export const ONBOARD_CONTARCT_ADDRESS =
-  "0x91DFcdCbF56d9615eDdFe1657A3752e75fF23712";
-export const ONBOARD_CONTRACT_ABI = onboardABI.abi;
 
-// agreement
-export const AGREEMENT_CONTARCT_ADDRESS =
-  "0x9e13201c504c41970dd1E5E10f7B8b06c5Cb9883";
-export const AGREEMENT_CONTRACT_ABI = agreementABI.abi;
+// ClientRegistry
+export const CLIENT_REGISTRY_CONTRACT_ADDRESS =
+  "0x9AFCbbeAC0318eE4F0d3682a423a98dbe393c2eD";
+export const CLIENT_REGISTRY_ABI = ClientRegistryABI.abi;
+
+// AgreementFactory
+export const AGREEMENT_FACTORY_CONTARCT_ADDRESS =
+  "0x15f1e23Df15aFbDB806d2da7CB84E4F65AaBA462";
+export const AGREEMENT_FACTORY_CONTRACT_ABI = AgreementFactoryABI.abi;
+
+// ServiceAgreement
+export const SERVICE_AGREEMENT_CONTARCT_ADDRESS =
+  "0x92A067eB63dA4EB2BD80D542dCC9b2397a5E5402";
+export const SERVICE_AGREEMENT_CONTRACT_ABI = ServiceAgreementABI.abi;
 
 export const dashboardContent = [
   { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
