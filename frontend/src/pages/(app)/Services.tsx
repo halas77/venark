@@ -2,93 +2,136 @@ import Layout from "./Layout";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { Calendar, DollarSign, FileText, Globe } from "lucide-react";
+import { DollarSign, FileText, Milestone, Plus } from "lucide-react";
 import { CustomSheet } from "./CustomSheet";
 import { CustomModal } from "./CustomModal";
 
 const Services = () => {
-  // Example data - replace with real data
   const campaigns = [
     {
       id: 1,
       name: "Summer Sale 2024",
       budget: 5000,
-      desc: "Lorem ipsum dolor sit, amet",
-      date: "For One week",
-      platform: "Multi-Platform",
+      desc: "Seasonal promotions",
+      date: "One Month",
+      milestones: [
+        {
+          amount: 1000,
+          milestoneDesc: "Initial setup",
+          isApproved: false,
+        },
+        {
+          amount: 2000,
+          milestoneDesc: "Mid-review",
+          isApproved: false,
+        },
+        {
+          amount: 2000,
+          milestoneDesc: "Final report",
+          isApproved: false,
+        },
+      ],
     },
     {
       id: 2,
       name: "Product Launch",
       budget: 12000,
-      desc: "Lorem ipsum dolor sit, amet",
-      date: "For One Month",
-      platform: "Social Media",
+      desc: "New flagship product",
+      date: "Three Month",
+      milestones: [
+        {
+          amount: 4000,
+          milestoneDesc: "Pre-launch",
+          isApproved: false,
+        },
+        {
+          amount: 5000,
+          milestoneDesc: "Launch day",
+          isApproved: false,
+        },
+        {
+          amount: 3000,
+          milestoneDesc: "Analysis",
+          isApproved: false,
+        },
+      ],
     },
-    // Add more campaigns...
   ];
 
   return (
     <Layout>
-      <div className="p-6 space-y-6">
-        {/* Header */}
+      <div className="p-4 space-y-6">
         <div className="flex justify-between items-center">
           <div>
-            <h1 className="text-2xl font-bold text-white">Services</h1>
-            <p className="text-gray-400">
-              Create your marketing campaigns and track their progress.
+            <h1 className="text-xl font-semibold text-white">Service</h1>
+            <p className="text-sm text-gray-400">
+              Create new services using our template or your own requirment
             </p>
           </div>
-          <Link to={"/services"}>
-            <CustomSheet />
-          </Link>
+          <CustomSheet/>
         </div>
 
-        {/* Campaigns Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {campaigns.map((campaign) => (
             <Card
               key={campaign.id}
-              className="bg-gray-900/50 hover:border-gray-500/50 transition-all duration-300 rounded-2xl shadow-md hover:shadow-lg backdrop-blur-lg"
+              className="bg-gray-900/50 border border-gray-800 hover:border-gray-700 rounded-lg transition-colors"
             >
-              <div className="px-6 space-y-5">
-                {/* Campaign Header */}
-                <div className="flex justify-between items-center">
-                  <h3 className="text-lg font-semibold text-white">
-                    {campaign.name}
-                  </h3>
-                </div>
-
-                {/* Campaign Details */}
-                <div className="space-y-3 text-sm text-gray-300">
-                  <div className="flex items-center gap-3">
-                    <DollarSign className="h-4 w-4 text-gray-100" />
-                    <span className="font-medium">
-                      Budget:{" "}
-                      {new Intl.NumberFormat("en-US", {
-                        style: "currency",
-                        currency: "USD",
-                      }).format(campaign.budget)}
+              <div className="p-4 space-y-4">
+                {/* Header */}
+                <div className="space-y-1">
+                  <div className="flex justify-between">
+                    <h3 className="font-medium text-white">{campaign.name}</h3>
+                    <span className="text-xs text-gray-400 px-2 py-1 bg-gray-800/50 rounded">
+                      {campaign.date}
                     </span>
                   </div>
+                  <p className="text-xs text-gray-400">{campaign.desc}</p>
+                </div>
 
-                  <div className="flex items-center gap-3">
-                    <Globe className="h-4 w-4 text-gray-100" />
-                    <span className="font-medium">
-                      Platform: {campaign.platform}
-                    </span>
+                {/* Budget */}
+                <div className="flex items-center gap-2 text-sm">
+                  <DollarSign className="h-4 w-4 text-gray-400" />
+                  <span className="text-white">
+                    {new Intl.NumberFormat("en-US", {
+                      style: "currency",
+                      currency: "USD",
+                      maximumFractionDigits: 0,
+                    }).format(campaign.budget)}
+                  </span>
+                </div>
+
+                {/* Milestones */}
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2 text-sm text-gray-400">
+                    <Milestone className="h-4 w-4" />
+                    <span>Milestones</span>
                   </div>
-
-                  <div className="flex items-center gap-3">
-                    <Calendar className="h-4 w-4 text-gray-100" />
-                    <span className="font-medium">{campaign.date}</span>
+                  <div className="space-y-1.5">
+                    {campaign.milestones.slice(0, 3).map((milestone, index) => (
+                      <div key={index} className="flex justify-between text-xs">
+                        <span className="text-gray-300 truncate max-w-[120px]">
+                          {milestone.milestoneDesc}
+                        </span>
+                        <span className="text-gray-400">
+                          {new Intl.NumberFormat("en-US", {
+                            style: "currency",
+                            currency: "USD",
+                            maximumFractionDigits: 0,
+                          }).format(milestone.amount)}
+                        </span>
+                      </div>
+                    ))}
+                    {campaign.milestones.length > 3 && (
+                      <div className="text-xs text-gray-500 pt-1">
+                        +{campaign.milestones.length - 3} more
+                      </div>
+                    )}
                   </div>
                 </div>
 
-                {/* Actions */}
-                <div className="flex gap-3 pt-4">
-                  <CustomModal campaign={campaign} />
-                </div>
+                {/* Action */}
+                <CustomModal campaign={campaign} />
               </div>
             </Card>
           ))}
@@ -96,17 +139,18 @@ const Services = () => {
 
         {/* Empty State */}
         {campaigns.length === 0 && (
-          <Card className="bg-gray-900/50 border-gray-900 text-center p-12">
-            <div className="space-y-4">
-              <FileText className="h-12 w-12 mx-auto text-gray-600" />
-              <h3 className="text-xl font-semibold text-white">
-                No Campaigns Found
+          <Card className="border-gray-800 text-center p-8">
+            <div className="space-y-3">
+              <FileText className="h-6 w-6 mx-auto text-gray-600" />
+              <h3 className="text-sm font-medium text-white">
+                No campaigns yet
               </h3>
-              <p className="text-gray-400">
-                Create your first campaign agreement to get started
+              <p className="text-xs text-gray-400 mb-3">
+                Create your first campaign
               </p>
-              <Button className="mt-4 bg-gradient-to-r from-gray-800 to-gray-700  hover:opacity-90">
-                Create Campaign
+              <Button size="sm" className="gap-1">
+                <Plus className="h-3.5 w-3.5" />
+                <span>New Campaign</span>
               </Button>
             </div>
           </Card>

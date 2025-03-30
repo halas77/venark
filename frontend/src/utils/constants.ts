@@ -1,9 +1,8 @@
 import ClientRegistryABI from "./ABIs/ClientRegistry.json";
-import AgreementFactoryABI from "./ABIs/AgreementFactory.json"
+import AgreementFactoryABI from "./ABIs/AgreementFactory.json";
 import ServiceAgreementABI from "./ABIs/ServiceAgreement.json";
 import { Flag, LayoutDashboard, CircleHelp, Crown } from "lucide-react";
 import { GitBranch, Mail } from "lucide-react";
-
 
 // ClientRegistry
 export const CLIENT_REGISTRY_CONTRACT_ADDRESS =
@@ -19,6 +18,10 @@ export const AGREEMENT_FACTORY_CONTRACT_ABI = AgreementFactoryABI.abi;
 export const SERVICE_AGREEMENT_CONTARCT_ADDRESS =
   "0x92A067eB63dA4EB2BD80D542dCC9b2397a5E5402";
 export const SERVICE_AGREEMENT_CONTRACT_ABI = ServiceAgreementABI.abi;
+
+// Receiver Account
+export const RecieverAccount = "0x096680DE94034935EBB6BFA117a218110001A2F4";
+export const USDCAddress = "0x036CbD53842c5426634e7929541eC2318f3dCF7e";
 
 export const dashboardContent = [
   { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },

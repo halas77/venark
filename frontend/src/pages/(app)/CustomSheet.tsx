@@ -33,7 +33,7 @@ export function CustomSheet() {
     <Sheet>
       <SheetTrigger asChild>
         <Button variant="secondary" className="gap-2">
-          Create Custom Service
+          New Service
         </Button>
       </SheetTrigger>
       <SheetContent className="bg-gray-900 text-white border-l border-gray-800 w-full max-w-md overflow-y-auto">

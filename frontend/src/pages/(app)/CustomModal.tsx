@@ -2,87 +2,106 @@ import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { useForm } from "react-hook-form";
 import { Textarea } from "@/components/ui/textarea";
-import { ArrowUpRight } from "lucide-react";
 
-export function CustomModal({ campaign }: any) {
+export function CustomModal({ campaign }: { campaign: any }) {
+  const { register, handleSubmit } = useForm();
+
+  const onSubmit = (data: any) => {
+    console.log("Form data:", data);
+    console.log("Campaign data:", campaign);
+  };
+
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="outline" className="flex items-center gap-2">
-          View Detail <ArrowUpRight />
+        <Button variant="outline" className="group">
+          <span>Use template</span>
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-xl bg-gray-900/70 backdrop-blur-md text-white border border-gray-800 rounded-lg shadow-xl">
+      <DialogContent className="max-w-md bg-gradient-to-b from-gray-900 to-gray-800/90 backdrop-blur-lg border border-gray-700/50 rounded-xl shadow-2xl">
         <DialogHeader>
-          <DialogTitle className="text-2xl font-bold">
-            Launch your campaign
-          </DialogTitle>
-          <DialogDescription className="text-sm text-gray-300">
-            Complete the details below to start your campaign
-          </DialogDescription>
+          <div className="flex items-center gap-3">
+            <DialogTitle className="text-xl font-semibold text-white">
+              Create Agreement
+            </DialogTitle>
+          </div>
+          <p className="text-sm text-gray-400 mt-1">
+            Based on "{campaign?.name}" template
+          </p>
         </DialogHeader>
-        <div className="grid gap-6 py-6">
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="name" className="text-right font-medium">
-              Scope
-            </Label>
-            <Textarea
-              id="name"
-              placeholder="Describe the scope of the work in detail"
-              className="col-span-3 border border-gray-700 bg-gray-800 text-white placeholder-gray-400"
-            />
-          </div>
 
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label className="text-right font-medium">Title</Label>
-            <p className="col-span-3 text-gray-200 text-sm font-normal">
-              {campaign.name}
-            </p>
-          </div>
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label className="text-right font-medium">Milestone</Label>
-            <div className="col-span-3 space-y-2">
-              <p className="text-gray-200 text-sm font-normal">
-                - {campaign.desc}
-              </p>
-              <p className="text-gray-200 text-sm font-normal">
-                - {campaign.desc}
-              </p>
-              <p className="text-gray-200 text-sm font-normal">
-                - {campaign.desc}
-              </p>
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-5 mt-4">
+          <div className="space-y-3">
+            <div>
+              <Label
+                htmlFor="companyName"
+                className="text-sm font-medium text-gray-300"
+              >
+                Company Name
+              </Label>
+              <Input
+                id="companyName"
+                {...register("companyName", { required: true })}
+                placeholder="Acme Inc."
+                className="mt-1 border-gray-700 bg-gray-800/50 hover:bg-gray-800/70 focus:bg-gray-800/70 focus:ring-1 focus:ring-blue-500/30 text-white transition-colors"
+              />
+            </div>
+
+            <div>
+              <Label
+                htmlFor="companyDesc"
+                className="text-sm font-medium text-gray-300"
+              >
+                Description
+              </Label>
+              <Textarea
+                id="companyDesc"
+                {...register("companyDesc")}
+                placeholder="Brief description of your company"
+                className="mt-1 border-gray-700 bg-gray-800/50 hover:bg-gray-800/70 focus:bg-gray-800/70 focus:ring-1 focus:ring-blue-500/30 text-white transition-colors min-h-[100px]"
+              />
+            </div>
+
+            <div>
+              <Label
+                htmlFor="companyURL"
+                className="text-sm font-medium text-gray-300"
+              >
+                Website URL
+              </Label>
+              <div className="flex mt-1">
+                <span className="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-700 bg-gray-700/50 text-gray-400 text-sm">
+                  https://
+                </span>
+                <Input
+                  id="companyURL"
+                  {...register("companyURL")}
+                  placeholder="yourcompany.com"
+                  className="rounded-l-none border-l-0 border-gray-700 bg-gray-800/50 hover:bg-gray-800/70 focus:bg-gray-800/70 focus:ring-1 focus:ring-blue-500/30 text-white transition-colors"
+                />
+              </div>
             </div>
           </div>
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label className="text-right font-medium">Budget</Label>
-            <p className="col-span-3 text-gray-200 text-sm font-normal">
-              {campaign.budget}
-            </p>
-          </div>
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label className="text-right font-medium">Platform</Label>
-            <p className="col-span-3 text-gray-200 text-sm font-normal">
-              {campaign.platform}
-            </p>
-          </div>
-        </div>
-        <DialogFooter>
-          <Button
+
+          <DialogFooter>
+            <Button
             variant={"outline"}
-            type="submit"
-            className="w-full  transition-all text-gray-900"
-          >
-            Start Campaign
-          </Button>
-        </DialogFooter>
+              type="submit"
+              className="w-full py-5"
+            >
+              Generate Agreement
+            </Button>
+          </DialogFooter>
+        </form>
       </DialogContent>
     </Dialog>
   );
