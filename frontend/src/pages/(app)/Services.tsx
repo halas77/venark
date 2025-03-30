@@ -1,63 +1,12 @@
 import Layout from "./Layout";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
 import { DollarSign, FileText, Milestone, Plus } from "lucide-react";
 import { CustomSheet } from "./CustomSheet";
 import { CustomModal } from "./CustomModal";
+import { campaigns } from "@/utils/constants";
 
 const Services = () => {
-  const campaigns = [
-    {
-      id: 1,
-      name: "Summer Sale 2024",
-      budget: 5000,
-      desc: "Seasonal promotions",
-      date: "One Month",
-      milestones: [
-        {
-          amount: 1000,
-          milestoneDesc: "Initial setup",
-          isApproved: false,
-        },
-        {
-          amount: 2000,
-          milestoneDesc: "Mid-review",
-          isApproved: false,
-        },
-        {
-          amount: 2000,
-          milestoneDesc: "Final report",
-          isApproved: false,
-        },
-      ],
-    },
-    {
-      id: 2,
-      name: "Product Launch",
-      budget: 12000,
-      desc: "New flagship product",
-      date: "Three Month",
-      milestones: [
-        {
-          amount: 4000,
-          milestoneDesc: "Pre-launch",
-          isApproved: false,
-        },
-        {
-          amount: 5000,
-          milestoneDesc: "Launch day",
-          isApproved: false,
-        },
-        {
-          amount: 3000,
-          milestoneDesc: "Analysis",
-          isApproved: false,
-        },
-      ],
-    },
-  ];
-
   return (
     <Layout>
       <div className="p-4 space-y-6">
@@ -65,10 +14,10 @@ const Services = () => {
           <div>
             <h1 className="text-xl font-semibold text-white">Service</h1>
             <p className="text-sm text-gray-400">
-              Create new services using our template or your own requirment
+              Create new agreement using our template or your own requirment
             </p>
           </div>
-          <CustomSheet/>
+          <CustomSheet />
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -97,7 +46,7 @@ const Services = () => {
                       style: "currency",
                       currency: "USD",
                       maximumFractionDigits: 0,
-                    }).format(campaign.budget)}
+                    }).format(campaign.budget / 1000000)}
                   </span>
                 </div>
 
@@ -111,14 +60,15 @@ const Services = () => {
                     {campaign.milestones.slice(0, 3).map((milestone, index) => (
                       <div key={index} className="flex justify-between text-xs">
                         <span className="text-gray-300 truncate max-w-[120px]">
-                          {milestone.milestoneDesc}
+                          {/* {milestone.milestoneDesc} */}
+                          Lorem ipsum dolor sit amet.
                         </span>
                         <span className="text-gray-400">
                           {new Intl.NumberFormat("en-US", {
                             style: "currency",
                             currency: "USD",
                             maximumFractionDigits: 0,
-                          }).format(milestone.amount)}
+                          }).format(milestone.paymentAmount / 1000000)}
                         </span>
                       </div>
                     ))}

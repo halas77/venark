@@ -14,6 +14,7 @@ contract AgreementFactory {
 
     // mapping
     mapping(string => string) public ipfsHashes;
+    mapping(address => address) public agreementContracts;
 
     // error
     error AgreementFactory__UserNotFound();
@@ -45,6 +46,8 @@ contract AgreementFactory {
             _budget,
             milestones
         );
+
+        agreementContracts[msg.sender] = agreement;
 
         emit AgreementDeployed(client, agreement);
         return agreement;

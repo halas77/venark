@@ -7,6 +7,7 @@ import {AgreementFactory} from "../src/AgreementFactory.sol";
 
 import {ERC20Mock} from "../lib/openzeppelin-contracts/contracts/mocks/token/ERC20Mock.sol";
 
+
 contract testContracts is Test {
     ClientRegistry public clientRegistry;
     AgreementFactory public agreementFactory;
