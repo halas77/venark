@@ -7,6 +7,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import axios from "axios";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
@@ -91,20 +92,44 @@ export function CustomModal({ campaign }: { campaign: Campaign }) {
     });
   };
 
+  const [isBackendLoading, setIsBackendLoading] = useState(false);
+
   const onSubmit = async (data: any) => {
-    const milestones = campaign.milestones;
-    const amount = campaign.budget;
+    const { milestones, budget: amount } = campaign;
 
     if (!milestones || !amount) {
+      console.error("Milestones or budget is missing.");
       return;
     }
 
-    agreementWriteContract({
-      address: AGREEMENT_FACTORY_CONTARCT_ADDRESS,
-      abi: AGREEMENT_FACTORY_CONTRACT_ABI,
-      functionName: "createAgreement",
-      args: [RecieverAccount, address, USDCAddress, amount, milestones],
-    });
+    try {
+      setIsBackendLoading(true);
+
+      const res = await axios.post(
+        "http://localhost:5000/api/create-agreement",
+        {
+          account: address,
+          companyName: data.companyName,
+          companyDesc: data.companyDesc,
+          companyURL: data.companyURL,
+          milestones,
+          amount,
+        }
+      );
+
+      console.log("Backend response:", res);
+
+      agreementWriteContract({
+        address: AGREEMENT_FACTORY_CONTARCT_ADDRESS,
+        abi: AGREEMENT_FACTORY_CONTRACT_ABI,
+        functionName: "createAgreement",
+        args: [RecieverAccount, address, USDCAddress, amount, milestones],
+      });
+    } catch (error) {
+      console.error("Error creating agreement:", error);
+    } finally {
+      setIsBackendLoading(false);
+    }
   };
 
   const navigate = useNavigate();
@@ -206,12 +231,12 @@ export function CustomModal({ campaign }: { campaign: Campaign }) {
 
             <DialogFooter>
               <Button
-                disabled={isAgreementHashConfirming}
+                disabled={isAgreementHashConfirming || isBackendLoading}
                 variant={"outline"}
                 type="submit"
                 className="w-full py-5"
               >
-                {isAgreementHashConfirming ? (
+                {isAgreementHashConfirming || isBackendLoading ? (
                   <div className="flex items-center gap-2">
                     <Loader2 className="h-6 w-6 animate-spin" />
                     <span>Generating...</span>

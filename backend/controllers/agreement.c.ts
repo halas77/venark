@@ -7,14 +7,23 @@ export const createAgreementController = async (
   res: Response
 ) => {
   try {
-    const { companyDesc, companyLink, companyName, account } = req.body;
+    const {
+      companyDesc,
+      companyURL,
+      companyName,
+      account,
+      amount,
+      milestones,
+    } = req.body;
 
     const formattedData = {
       account: account,
       [companyName]: {
         name: companyName,
         desc: companyDesc,
-        link: companyLink,
+        link: companyURL,
+        amount: amount,
+        milestones: milestones,
         tweets: [],
         memes: [],
       },
