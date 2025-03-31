@@ -30,6 +30,7 @@ import {
 } from "wagmi";
 import { Check, Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export function CustomModal({ campaign }: { campaign: Campaign }) {
   const [page, setPage] = useState("agreement");
@@ -39,8 +40,11 @@ export function CustomModal({ campaign }: { campaign: Campaign }) {
   const { address } = useAppKitAccount();
   const { data: agreementHash, writeContract: agreementWriteContract } =
     useWriteContract();
+  const { data: allowanceHash, writeContract: allowanceWriteContract } =
+    useWriteContract();
   const { data: paymentHash, writeContract: paymentWriteContract } =
     useWriteContract();
+
   const {
     isLoading: isAgreementHashConfirming,
     isSuccess: isAgreementHashConfirmed,
@@ -49,8 +53,15 @@ export function CustomModal({ campaign }: { campaign: Campaign }) {
   });
 
   const {
+    isLoading: isAllowanceHashConfirming,
+    isSuccess: isAllowanceHashConfirmed,
+  } = useWaitForTransactionReceipt({
+    hash: allowanceHash,
+  });
+
+  const {
     isLoading: isPaymentHashConfirming,
-    isSuccess: isPaymentHashConfirmed,
+    isSuccess: isPaymenteHashConfirmed,
   } = useWaitForTransactionReceipt({
     hash: paymentHash,
   });
@@ -63,7 +74,7 @@ export function CustomModal({ campaign }: { campaign: Campaign }) {
   });
 
   const approveAllowance = () => {
-    paymentWriteContract({
+    allowanceWriteContract({
       abi: ERC20_CONTRACT_ABI,
       address: USDCAddress,
       functionName: "approve",
@@ -96,16 +107,29 @@ export function CustomModal({ campaign }: { campaign: Campaign }) {
     });
   };
 
+  const navigate = useNavigate();
+
   useEffect(() => {
     if (isAgreementHashConfirmed) {
       setPage("payment");
       reset();
     }
 
-    if (isPaymentHashConfirmed) {
+    if (isAllowanceHashConfirmed) {
       setIsAllowed(true);
     }
-  }, [setIsAllowed, isPaymentHashConfirmed, isAgreementHashConfirmed, reset]);
+
+    if (isPaymenteHashConfirmed) {
+      navigate("/campaigns");
+    }
+  }, [
+    setIsAllowed,
+    isAllowanceHashConfirmed,
+    isAgreementHashConfirmed,
+    isPaymenteHashConfirmed,
+    navigate,
+    reset,
+  ]);
 
   return (
     <Dialog>
@@ -259,10 +283,10 @@ export function CustomModal({ campaign }: { campaign: Campaign }) {
                       size="sm"
                       variant="outline"
                       onClick={approveAllowance}
-                      disabled={isPaymentHashConfirming}
-                      className="mt-2 bg-blue-900/20 hover:bg-blue-900/30 border-blue-800 text-blue-400"
+                      disabled={isAllowanceHashConfirming}
+                      className="mt-2"
                     >
-                      {isPaymentHashConfirming ? (
+                      {isAllowanceHashConfirming ? (
                         <Loader2 className="h-4 w-4 animate-spin" />
                       ) : (
                         "Approve"
@@ -313,13 +337,9 @@ export function CustomModal({ campaign }: { campaign: Campaign }) {
                   {isAllowed && (
                     <Button
                       size="sm"
+                      variant={"outline"}
                       onClick={pay}
                       disabled={isPaymentHashConfirming}
-                      className={`mt-2 ${
-                        isPaymentHashConfirming
-                          ? "bg-purple-900/20 hover:bg-purple-900/20"
-                          : "bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-600/90 hover:to-blue-600/90"
-                      } text-white`}
                     >
                       {isPaymentHashConfirming ? (
                         <Loader2 className="h-4 w-4 animate-spin" />

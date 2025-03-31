@@ -31,7 +31,7 @@ const Services = () => {
                 <div className="space-y-1">
                   <div className="flex justify-between">
                     <h3 className="font-medium text-white">{campaign.name}</h3>
-                    <span className="text-xs text-gray-400 px-2 py-1 bg-gray-800/50 rounded">
+                    <span className="text-xs text-gray-400 px-2 py-1 bg-gray-800/50 rounded border border-gray-600">
                       {campaign.date}
                     </span>
                   </div>

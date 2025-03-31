@@ -64,22 +64,22 @@ export const campaigns: Campaign[] = [
   {
     id: 1,
     name: "Summer Sale 2024",
-    budget: 5000000,
+    budget: 500000,
     desc: "Seasonal promotions",
     date: "One Month",
     milestones: [
       {
-        paymentAmount: 1000000,
+        paymentAmount: 100000,
         // milestoneDesc: "Initial setup",
         isApproved: false,
       },
       {
-        paymentAmount: 2000000,
+        paymentAmount: 200000,
         // milestoneDesc: "Mid-review",
         isApproved: false,
       },
       {
-        paymentAmount: 2000000,
+        paymentAmount: 200000,
         // milestoneDesc: "Final report",
         isApproved: false,
       },
@@ -88,22 +88,22 @@ export const campaigns: Campaign[] = [
   {
     id: 2,
     name: "Product Launch",
-    budget: 12000000,
+    budget: 1200000,
     desc: "New flagship product",
     date: "Three Month",
     milestones: [
       {
-        paymentAmount: 4000000,
+        paymentAmount: 400000,
         // milestoneDesc: "Pre-launch",
         isApproved: false,
       },
       {
-        paymentAmount: 5000000,
+        paymentAmount: 500000,
         // milestoneDesc: "Launch day",
         isApproved: false,
       },
       {
-        paymentAmount: 3000000,
+        paymentAmount: 300000,
         // milestoneDesc: "Analysis",
         isApproved: false,
       },
