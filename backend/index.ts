@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import exampleRoutes from "./routes/example.r";
 import creativeRoutes from "./routes/creative.r";
 import analyzerRoutes from "./routes/analyze.r";
+import agreementRoute from "./routes/agreement.r"
 
 dotenv.config();
 
@@ -18,6 +19,8 @@ app.use(express.json());
 app.use("/api/example", exampleRoutes);
 app.use("/api/generate-content", creativeRoutes);
 app.use("/api/analyze-content", analyzerRoutes);
+app.use("/api/create-agreement", agreementRoute);
+
 
 // Start Server
 app.listen(PORT, () => {
