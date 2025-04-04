@@ -19,7 +19,7 @@ const Navbar: React.FC<NavbarProps> = ({ className }) => {
 
   return (
     <div className={`w-full ${className}`}>
-      <nav className="h-16 flex justify-between lg:justify-end items-center bg-gray-900/50 text-gray-200 relative z-10 px-5">
+      <nav className="h-16 flex justify-between lg:justify-end items-center bg-gray-950 border border-b border-white/15 text-gray-200 relative z-10 px-5">
         <div className="relative flex items-center space-x-4">
           <div className="relative group cursor-pointer">
             <Button

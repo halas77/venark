@@ -21,15 +21,12 @@ const Sidebar: React.FC<SidebarProps> = ({ className }) => {
   return (
     <div className="relative">
       <div
-        className={`absolute  lg:relative h-screen shadow bg-gray-900/50 transition-width duration-300 ${
+        className={`absolute  lg:relative h-screen shadow bg-gray-950 border border-r border-white/15 transition-width duration-300 ${
           isExpanded ? "w-64" : "w-16"
         } ${className}`}
       >
         {/* Logo Section */}
-        <Link
-          to="/"
-          className="h-16 flex items-center px-4 border-b border-white/10"
-        >
+        <Link to="/" className="h-16 flex items-center px-4 ">
           {isExpanded && (
             <span className="font-bold text-2xl bg-gradient-to-r from-purple-200 to-pink-200 bg-clip-text text-transparent font-serif">
               VENARK.
