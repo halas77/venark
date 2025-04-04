@@ -104,9 +104,7 @@ export function CustomModal({ campaign }: { campaign: Campaign }) {
 
     try {
       setIsBackendLoading(true);
-
       localStorage.setItem("companyName", data.companyName);
-
       const res = await axios.post(
         "http://localhost:5000/api/create-agreement",
         {
