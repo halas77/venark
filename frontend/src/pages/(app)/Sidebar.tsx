@@ -26,7 +26,10 @@ const Sidebar: React.FC<SidebarProps> = ({ className }) => {
         } ${className}`}
       >
         {/* Logo Section */}
-        <Link to="/" className="h-16 flex items-center px-4 ">
+        <Link
+          to="/"
+          className="h-16 flex items-center px-4 border border-white/15"
+        >
           {isExpanded && (
             <span className="font-bold text-2xl bg-gradient-to-r from-purple-200 to-pink-200 bg-clip-text text-transparent font-serif">
               VENARK.
