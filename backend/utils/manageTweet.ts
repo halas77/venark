@@ -20,7 +20,7 @@ export const tweetContent = async (tweetText: any) => {
 export const fetchRecentTweets = async () => {
   try {
     const tweets = await twitterClient.v2.userTimeline("1898359240709840896", {
-      max_results: 5,
+      max_results: 2,
       "tweet.fields": "public_metrics",
     });
 

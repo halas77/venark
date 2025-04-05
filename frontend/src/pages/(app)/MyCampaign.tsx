@@ -28,7 +28,7 @@ export interface CampaignData {
         link: string;
         amount: string;
         milestones: { isApproved: boolean; paymentAmount: number }[];
-        meme: [];
+        memes: [];
         tweets: [];
       }
     | string

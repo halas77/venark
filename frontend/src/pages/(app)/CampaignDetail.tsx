@@ -16,8 +16,9 @@ import {
   Clock,
   DollarSign,
   User,
-  File,
 } from "lucide-react";
+import { toast } from "sonner";
+import ViewSummaryModal from "./ViewSummaryModal";
 
 const CampaignDetail = () => {
   const [data, setData] = useState<CampaignData | null>(null);
@@ -52,17 +53,28 @@ const CampaignDetail = () => {
     }
   }, [ipfsHash]);
 
+  console.log("data", data);
+
   const generateContent = async () => {
+    const compaignData = {
+      previousIpfsHash: ipfsHash,
+      companyLink: campaign?.link,
+      companyName: isCampaignObject ? campaign.name : "",
+      companyDesc: isCampaignObject ? campaign.desc : "",
+      account: data?.account,
+    };
+
     try {
       setGenerating(true);
-      // Replace with your actual content generation API call
-      const response = await axios.post("/api/generate-content", {
-        campaignId: id,
-        campaignData: data,
-      });
-      // Handle the generated content
+      const response = await axios.post(
+        "http://localhost:5000/api/generate-content",
+        compaignData
+      );
+      toast("Content generated successfully!");
       console.log("Generated content:", response.data);
     } catch (error) {
+      toast("Error generating content");
+
       console.error("Error generating content:", error);
     } finally {
       setGenerating(false);
@@ -99,14 +111,7 @@ const CampaignDetail = () => {
               {isCampaignObject ? campaign.name : "Campaign"}
             </h1>
             <div className="flex gap-4">
-              <Button
-                onClick={generateContent}
-                disabled={generating}
-                className="gap-2 "
-              >
-                <File className="w-4 h-4" />
-                {generating ? "Generating..." : "View Summary"}
-              </Button>
+              <ViewSummaryModal />
               <Button
                 onClick={generateContent}
                 disabled={generating}
@@ -210,14 +215,8 @@ const CampaignDetail = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="bg-gray-900 p-4 rounded-lg border border-gray-800">
               <h2 className="text-sm font-medium text-gray-400 mb-3">Memes</h2>
-              {isCampaignObject && campaign.meme?.length ? (
-                <div className="space-y-2">
-                  {campaign.meme.map((meme, idx) => (
-                    <div key={idx} className="text-sm text-gray-300">
-                      Meme {idx + 1}
-                    </div>
-                  ))}
-                </div>
+              {isCampaignObject && campaign.memes?.length ? (
+                <div className="space-y-2">{campaign.memes.length} Memes</div>
               ) : (
                 <p className="text-gray-500 text-sm">No memes yet</p>
               )}
@@ -226,13 +225,7 @@ const CampaignDetail = () => {
             <div className="bg-gray-900 p-4 rounded-lg border border-gray-800">
               <h2 className="text-sm font-medium text-gray-400 mb-3">Tweets</h2>
               {isCampaignObject && campaign.tweets?.length ? (
-                <div className="space-y-2">
-                  {campaign.tweets.map((tweet, idx) => (
-                    <div key={idx} className="text-sm text-gray-300">
-                      Tweet {idx + 1}
-                    </div>
-                  ))}
-                </div>
+                <div className="space-y-2">{campaign.tweets.length} Tweets</div>
               ) : (
                 <p className="text-gray-500 text-sm">No tweets yet</p>
               )}
