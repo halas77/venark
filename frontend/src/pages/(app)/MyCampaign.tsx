@@ -77,9 +77,7 @@ const MyCampaign = () => {
         {/* Header */}
         <div className="flex justify-between items-center">
           <div>
-            <h1 className="text-2xl font-bold text-white">
-              Campaign Agreements
-            </h1>
+            <h1 className="text-2xl font-bold text-white">My Campaigns</h1>
             <p className="text-gray-400">
               Manage your active marketing campaigns
             </p>

@@ -7,9 +7,15 @@ const twitterClient = new TwitterApi({
   accessSecret: "dYLd5w32u0Bh3BnrHSBn3sqo2hCbplwy769XCb1MtAVgG",
 });
 
-export const tweetContent = async (tweetText: any) => {
+export const tweetContent = async (tweetText: any, mediaPath: string) => {
   try {
-    const tweetResponse = await twitterClient.v2.tweet(tweetText);
+    const mediaId = await twitterClient.v1.uploadMedia(mediaPath);
+    const tweetResponse = await twitterClient.v2.tweet({
+      text: tweetText,
+      media: {
+        media_ids: [mediaId],
+      },
+    });
     return tweetResponse;
   } catch (error) {
     console.error("Error posting tweet:", error);

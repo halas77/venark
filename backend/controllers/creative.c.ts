@@ -27,7 +27,7 @@ export const creativeController = async (req: Request, res: Response) => {
     const memeResponse = await generateMeme(formattedGeneratedContent);
 
     // Post Tweet
-    await tweetContent(generatedContent);
+    await tweetContent(generatedContent, memeResponse);
 
     // Upload to IPFS
     let storedData: { [key: string]: CompanyData } = {};

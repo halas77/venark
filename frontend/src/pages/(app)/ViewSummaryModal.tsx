@@ -7,6 +7,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import ReactMarkdown from "react-markdown";
 import { File, Loader2 } from "lucide-react";
 import axios from "axios";
 
@@ -57,7 +58,7 @@ const ViewSummaryModal = () => {
           </div>
         </DialogHeader>
 
-        <div className="relative">
+        <div className="relative h-[400px] overflow-y-auto p-4">
           {loading ? (
             <div className="flex justify-center items-center h-40">
               <Loader2 className="w-8 h-8 animate-spin text-gray-500" />
@@ -66,6 +67,7 @@ const ViewSummaryModal = () => {
             <div className="p-4 bg-gray-800/50 rounded-lg border border-gray-700">
               <pre className="whitespace-pre-wrap font-mono text-gray-200 text-sm leading-6">
                 {summary}
+                <ReactMarkdown>{summary}</ReactMarkdown>
               </pre>
             </div>
           ) : (
