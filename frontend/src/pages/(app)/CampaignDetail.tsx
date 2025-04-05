@@ -150,7 +150,7 @@ const CampaignDetail = () => {
                 <span className="text-sm">Website</span>
               </div>
               <a
-                href={`https://${campaign.link}`}
+                href={`https://${campaign?.link}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-blue-400 hover:text-blue-300 text-sm mt-1 block truncate"
