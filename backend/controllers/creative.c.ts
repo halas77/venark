@@ -3,18 +3,17 @@ import { generateContent } from "../agents/creatorAgent";
 import { generateMeme } from "../agents/memeGeneratorAgent";
 import { tweetContent } from "../utils/manageTweet";
 import { fetchFromIPFS, uploadToIPFS } from "../utils/manageIPFS";
-import { ethers } from "ethers";
+import { sendToContract } from "../utils/sendToContract";
 
 interface CompanyData {
   tweets: any[];
   memes: any[];
 }
 
-let previousIpfsHash: string | null = null;
-
 export const creativeController = async (req: Request, res: Response) => {
   try {
-    const { companyDesc, companyLink, companyName, account } = req.body;
+    const { previousIpfsHash, companyDesc, companyLink, companyName, account } =
+      req.body;
 
     // Generate content
     const generatedContent = await generateContent(
@@ -55,10 +54,7 @@ export const creativeController = async (req: Request, res: Response) => {
 
     // Upload updated data to IPFS
     const newIpfsHash = await uploadToIPFS(updatedData);
-    previousIpfsHash = newIpfsHash;
-
-    // send the result onchian
-    // the newIpfsHash has to be stored on chian
+    await sendToContract(companyName, newIpfsHash);
 
     res.json({
       message: formattedGeneratedContent,
