@@ -68,12 +68,12 @@ export const campaigns: Campaign[] = [
     date: "One Month",
     milestones: [
       {
-        paymentAmount: 500000,
+        paymentAmount: 1000000,
         // milestoneDesc: "Initial setup",
         isApproved: false,
       },
       {
-        paymentAmount: 500000,
+        paymentAmount: 1000000,
         // milestoneDesc: "Mid-review",
         isApproved: false,
       },
@@ -87,22 +87,22 @@ export const campaigns: Campaign[] = [
   {
     id: 2,
     name: "Product Launch",
-    budget: 1200000,
+    budget: 12000000,
     desc: "New flagship product",
     date: "Three Month",
     milestones: [
       {
-        paymentAmount: 400000,
+        paymentAmount: 4000000,
         // milestoneDesc: "Pre-launch",
         isApproved: false,
       },
       {
-        paymentAmount: 500000,
+        paymentAmount: 5000000,
         // milestoneDesc: "Launch day",
         isApproved: false,
       },
       {
-        paymentAmount: 300000,
+        paymentAmount: 3000000,
         // milestoneDesc: "Analysis",
         isApproved: false,
       },
