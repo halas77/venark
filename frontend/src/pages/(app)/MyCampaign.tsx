@@ -20,21 +20,24 @@ function calculateCompletionPercentage(
   return Math.round((completed / milestones.length) * 100);
 }
 
+export interface CampaignData {
+  [key: string]:
+    | {
+        name: string;
+        desc: string;
+        link: string;
+        amount: string;
+        milestones: { isApproved: boolean; paymentAmount: number }[];
+        meme: [];
+        tweets: [];
+      }
+    | string
+    | undefined;
+
+  account: string;
+}
+
 const MyCampaign = () => {
-  interface CampaignData {
-    [key: string]:
-      | {
-          name: string;
-          link: string;
-          amount: string;
-          milestones: { isApproved: boolean; paymentAmount: number }[];
-        }
-      | string
-      | undefined;
-
-    account: string;
-  }
-
   const [data, setData] = useState<CampaignData | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -171,7 +174,7 @@ const MyCampaign = () => {
                         }).format(
                           typeof data[companyName] === "object" &&
                             data[companyName]?.amount
-                            ? Number(data[companyName].amount)
+                            ? Number(data[companyName].amount) / 1000000
                             : 0
                         )}
                       </span>
