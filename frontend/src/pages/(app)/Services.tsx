@@ -60,8 +60,13 @@ const Services = () => {
                     {campaign.milestones.slice(0, 3).map((milestone, index) => (
                       <div key={index} className="flex justify-between text-xs">
                         <span className="text-gray-300 truncate max-w-[120px]">
-                          {/* {milestone.milestoneDesc} */}
-                          Lorem ipsum dolor sit amet.
+                          {index === 0
+                            ? "Initial Payment"
+                            : index === 1
+                            ? "Second Payment"
+                            : index === 2
+                            ? "Final Payment"
+                            : ""}
                         </span>
                         <span className="text-gray-400">
                           {new Intl.NumberFormat("en-US", {

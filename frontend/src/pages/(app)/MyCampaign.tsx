@@ -138,98 +138,103 @@ const MyCampaign = () => {
         {/* Data State */}
         {!loading && companyName && data && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <Card className="bg-gray-900/50 border-gray-900 hover:border-purple-500/30 transition-colors">
-              <div className="p-4 space-y-3">
-                {/* Compact Header */}
-                <div className="flex justify-between items-center">
-                  <h3 className="text-lg font-semibold text-white truncate max-w-[180px]">
-                    {typeof data[companyName] === "object" &&
-                      data[companyName]?.name}
-                  </h3>
-                  <Badge className="bg-purple-500">
-                    {(typeof data[companyName] === "object" &&
-                      data[companyName]?.milestones?.filter((m) => m.isApproved)
-                        .length) ||
-                      0}
-                    /
-                    {(typeof data[companyName] === "object" &&
-                      data[companyName]?.milestones?.length) ||
-                      0}{" "}
-                    Milestones
-                  </Badge>
-                </div>
-
-                {/* Budget + Progress */}
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="text-purple-400 font-medium">
-                      {new Intl.NumberFormat("en-US", {
-                        style: "currency",
-                        currency: "USD",
-                      }).format(
-                        typeof data[companyName] === "object" &&
-                          data[companyName]?.amount
-                          ? Number(data[companyName].amount)
-                          : 0
-                      )}
-                    </span>
-                    <span className="text-gray-400">
-                      {calculateCompletionPercentage(
-                        typeof data[companyName] === "object"
-                          ? data[companyName]?.milestones
-                          : undefined
-                      )}
-                      % complete
-                    </span>
+            <Link to={`/dashboard/${companyName}`}>
+              <Card className="bg-gray-900/50 border-gray-900 hover:border-purple-500/30 transition-colors">
+                <div className="p-4 space-y-3">
+                  {/* Compact Header */}
+                  <div className="flex justify-between items-center">
+                    <h3 className="text-lg font-semibold text-white truncate max-w-[180px]">
+                      {typeof data[companyName] === "object" &&
+                        data[companyName]?.name}
+                    </h3>
+                    <Badge className="bg-purple-500">
+                      {(typeof data[companyName] === "object" &&
+                        data[companyName]?.milestones?.filter(
+                          (m) => m.isApproved
+                        ).length) ||
+                        0}
+                      /
+                      {(typeof data[companyName] === "object" &&
+                        data[companyName]?.milestones?.length) ||
+                        0}{" "}
+                      Milestones
+                    </Badge>
                   </div>
 
-                  {/* Slim progress bar */}
-                  <div className="w-full bg-gray-800 rounded-full h-1">
-                    <div
-                      className="bg-gradient-to-r from-purple-100 to-pink-100 h-1 rounded-full"
-                      style={{
-                        width: `${calculateCompletionPercentage(
+                  {/* Budget + Progress */}
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-purple-400 font-medium">
+                        {new Intl.NumberFormat("en-US", {
+                          style: "currency",
+                          currency: "USD",
+                        }).format(
+                          typeof data[companyName] === "object" &&
+                            data[companyName]?.amount
+                            ? Number(data[companyName].amount)
+                            : 0
+                        )}
+                      </span>
+                      <span className="text-gray-400">
+                        {calculateCompletionPercentage(
                           typeof data[companyName] === "object"
                             ? data[companyName]?.milestones
                             : undefined
-                        )}%`,
-                      }}
-                    />
-                  </div>
-                </div>
+                        )}
+                        % complete
+                      </span>
+                    </div>
 
-                {/* Milestone indicators */}
-                <div className="flex gap-1">
-                  {typeof data[companyName] === "object" &&
-                    data[companyName]?.milestones?.map((milestone, index) => (
+                    {/* Slim progress bar */}
+                    <div className="w-full bg-gray-800 rounded-full h-1">
                       <div
-                        key={index}
-                        className={`h-1 flex-1 rounded-sm ${
-                          milestone.isApproved ? "bg-green-400" : "bg-gray-700"
-                        }`}
-                        title={`Milestone ${
-                          index + 1
-                        }: $${milestone.paymentAmount.toLocaleString()}`}
+                        className="bg-gradient-to-r from-purple-100 to-pink-100 h-1 rounded-full"
+                        style={{
+                          width: `${calculateCompletionPercentage(
+                            typeof data[companyName] === "object"
+                              ? data[companyName]?.milestones
+                              : undefined
+                          )}%`,
+                        }}
                       />
-                    ))}
-                </div>
+                    </div>
+                  </div>
 
-                {/* Compact footer */}
-                <div className="flex justify-between items-center text-xs text-gray-400">
-                  <div className="flex items-center gap-1 truncate max-w-[120px]">
-                    <Globe className="h-3 w-3 text-blue-400" />
+                  {/* Milestone indicators */}
+                  <div className="flex gap-1">
+                    {typeof data[companyName] === "object" &&
+                      data[companyName]?.milestones?.map((milestone, index) => (
+                        <div
+                          key={index}
+                          className={`h-1 flex-1 rounded-sm ${
+                            milestone.isApproved
+                              ? "bg-green-400"
+                              : "bg-gray-700"
+                          }`}
+                          title={`Milestone ${
+                            index + 1
+                          }: $${milestone.paymentAmount.toLocaleString()}`}
+                        />
+                      ))}
+                  </div>
+
+                  {/* Compact footer */}
+                  <div className="flex justify-between items-center text-xs text-gray-400">
+                    <div className="flex items-center gap-1 truncate max-w-[120px]">
+                      <Globe className="h-3 w-3 text-blue-400" />
+                      <span>
+                        {typeof data[companyName]?.link === "string"
+                          ? data[companyName].link.replace(/^https?:\/\//, "")
+                          : ""}
+                      </span>
+                    </div>
                     <span>
-                      {typeof data[companyName]?.link === "string"
-                        ? data[companyName].link.replace(/^https?:\/\//, "")
-                        : ""}
+                      {data.account?.slice(0, 4)}...{data.account?.slice(-2)}
                     </span>
                   </div>
-                  <span>
-                    {data.account?.slice(0, 4)}...{data.account?.slice(-2)}
-                  </span>
                 </div>
-              </div>
-            </Card>
+              </Card>
+            </Link>
           </div>
         )}
       </div>

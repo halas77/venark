@@ -2,7 +2,7 @@ import ClientRegistryABI from "./ABIs/ClientRegistry.json";
 import AgreementFactoryABI from "./ABIs/AgreementFactory.json";
 import ServiceAgreementABI from "./ABIs/ServiceAgreement.json";
 import ERC20ABI from "./ABIs/ERC20.json";
-import { Flag, LayoutDashboard, CircleHelp, Crown } from "lucide-react";
+import { LayoutDashboard, CircleHelp, Crown } from "lucide-react";
 import { GitBranch, Mail } from "lucide-react";
 
 // ClientRegistry
@@ -29,7 +29,6 @@ export const USDCAddress = "0x036CbD53842c5426634e7929541eC2318f3dCF7e";
 
 export const dashboardContent = [
   { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
-  { label: "Campaigns", href: "/campaigns", icon: Flag },
   { label: "Services", href: "/services", icon: Crown },
   { label: "Help", href: "/help", icon: CircleHelp },
 ];
@@ -64,22 +63,22 @@ export const campaigns: Campaign[] = [
   {
     id: 1,
     name: "Summer Sale 2024",
-    budget: 500000,
+    budget: 3000000,
     desc: "Seasonal promotions",
     date: "One Month",
     milestones: [
       {
-        paymentAmount: 100000,
+        paymentAmount: 500000,
         // milestoneDesc: "Initial setup",
         isApproved: false,
       },
       {
-        paymentAmount: 200000,
+        paymentAmount: 500000,
         // milestoneDesc: "Mid-review",
         isApproved: false,
       },
       {
-        paymentAmount: 200000,
+        paymentAmount: 1000000,
         // milestoneDesc: "Final report",
         isApproved: false,
       },

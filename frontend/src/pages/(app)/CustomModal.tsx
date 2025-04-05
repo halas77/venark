@@ -145,7 +145,7 @@ export function CustomModal({ campaign }: { campaign: Campaign }) {
     }
 
     if (isPaymenteHashConfirmed) {
-      navigate("/campaigns");
+      navigate("/dashboard");
     }
   }, [
     setIsAllowed,
