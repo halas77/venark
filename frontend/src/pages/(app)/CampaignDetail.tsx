@@ -34,7 +34,7 @@ const CampaignDetail = () => {
 
   const { address } = useAppKitAccount();
 
-  const { data: ipfsHash } = useReadContract({
+  const { data: ipfsHash, refetch } = useReadContract({
     abi: AGREEMENT_FACTORY_CONTRACT_ABI,
     address: AGREEMENT_FACTORY_CONTARCT_ADDRESS,
     functionName: "ipfsHashes",
@@ -103,6 +103,7 @@ const CampaignDetail = () => {
       );
       toast("Content generated successfully!");
       console.log("Generated content:", response.data);
+      refetch();
     } catch (error) {
       toast("Error generating content");
 

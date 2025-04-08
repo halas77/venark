@@ -106,19 +106,14 @@ export function CustomModal({ campaign }: { campaign: Campaign }) {
     try {
       setIsBackendLoading(true);
       localStorage.setItem("companyName", data.companyName);
-      const res = await axios.post(
-        "http://localhost:5000/api/create-agreement",
-        {
-          account: address,
-          companyName: data.companyName,
-          companyDesc: data.companyDesc,
-          companyURL: data.companyURL,
-          milestones,
-          amount,
-        }
-      );
-
-      console.log("Backend response:", res);
+      await axios.post("http://localhost:5000/api/create-agreement", {
+        account: address,
+        companyName: data.companyName,
+        companyDesc: data.companyDesc,
+        companyURL: data.companyURL,
+        milestones,
+        amount,
+      });
 
       agreementWriteContract({
         address: AGREEMENT_FACTORY_CONTARCT_ADDRESS,

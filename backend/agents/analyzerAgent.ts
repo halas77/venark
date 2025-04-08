@@ -5,8 +5,10 @@ import { getTrendingTopics } from "./creatorAgent";
 export const analyzeTweets = async (tweets: any) => {
   const trends = await getTrendingTopics();
 
+  console.log("tweets", tweets);
+
   const tweetTexts = tweets?.data
-    .map(
+    ?.map(
       (tweet: any) =>
         `Tweet: "${tweet.text}" Engagement: ${JSON.stringify(
           tweet.public_metrics
@@ -14,12 +16,11 @@ export const analyzeTweets = async (tweets: any) => {
     )
     .join("\n");
 
-
   const response = await agent.invoke(
     {
       messages: [
         new HumanMessage(
-        `
+          `
         Analyze the following tweets based on engagement (likes, retweets, replies).
         Suggest improvements for future tweets. Highlight better wording, call-to-actions, or trending topics to use.
 
