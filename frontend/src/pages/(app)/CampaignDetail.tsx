@@ -98,7 +98,7 @@ const CampaignDetail = () => {
     try {
       setGenerating(true);
       const response = await axios.post(
-        "http://localhost:5000/api/generate-content",
+        "https://venark.onrender.com/api/generate-content",
         compaignData
       );
       toast("Content generated successfully!");

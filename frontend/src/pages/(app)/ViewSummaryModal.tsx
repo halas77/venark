@@ -19,7 +19,9 @@ const ViewSummaryModal = () => {
   const fetchData = async () => {
     try {
       setLoading(true);
-      const data = await axios.get("http://localhost:5000/api/analyze-content");
+      const data = await axios.get(
+        "https://venark.onrender.com/api/analyze-content"
+      );
 
       console.log("data", data.data.message);
 
