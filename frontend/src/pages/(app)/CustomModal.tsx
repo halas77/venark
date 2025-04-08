@@ -106,14 +106,17 @@ export function CustomModal({ campaign }: { campaign: Campaign }) {
     try {
       setIsBackendLoading(true);
       localStorage.setItem("companyName", data.companyName);
-      await axios.post("http://localhost:5000/api/create-agreement", {
-        account: address,
-        companyName: data.companyName,
-        companyDesc: data.companyDesc,
-        companyURL: data.companyURL,
-        milestones,
-        amount,
-      });
+      await axios.post(
+        "https://venark.onrender.com:10000/api/create-agreement",
+        {
+          account: address,
+          companyName: data.companyName,
+          companyDesc: data.companyDesc,
+          companyURL: data.companyURL,
+          milestones,
+          amount,
+        }
+      );
 
       agreementWriteContract({
         address: AGREEMENT_FACTORY_CONTARCT_ADDRESS,

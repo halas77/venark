@@ -3,8 +3,8 @@ import { TwitterApi } from "twitter-api-v2";
 const twitterClient = new TwitterApi({
   appKey: "bR6PdBPj0SI5ZlbQcpfZYd1ho",
   appSecret: "7xvb3YzFL6yv3rMgIXeTNIhybhqN0qqPuhzYi2zciTfPvwqYWm",
-  accessToken: "1898359240709840896-QCruicQDqJrRYcKodVAblK7rE9gF2t",
-  accessSecret: "dYLd5w32u0Bh3BnrHSBn3sqo2hCbplwy769XCb1MtAVgG",
+  accessToken: process.env.X_ACCESS_TOKEN,
+  accessSecret: process.env.X_ACCESS_SECRET,
 });
 
 export const tweetContent = async (tweetText: any, mediaPath: string) => {

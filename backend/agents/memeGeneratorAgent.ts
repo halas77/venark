@@ -1,7 +1,7 @@
 import { HfInference } from "@huggingface/inference";
 import * as fs from "fs"; // ✅ Fix for fs
 
-const hfInference = new HfInference("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");
+const hfInference = new HfInference(process.env.HF_API_Key);
 
 export const generateMeme = async (prompt: string): Promise<string> => {
   const response = await hfInference.textToImage({

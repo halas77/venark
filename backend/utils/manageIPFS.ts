@@ -1,9 +1,5 @@
 import axios from "axios";
 
-const PINATA_API_KEY = "630867093a919625554c";
-const PINATA_SECRET_API_KEY =
-  "86bab7c0d7b1f75c23a56a0f6c076fe455baf32811206907e2966398c27ba7a4";
-
 /**
  * Fetch stored JSON from IPFS using its hash
  */
@@ -33,8 +29,8 @@ export const uploadToIPFS = async (data: any): Promise<string> => {
       {
         headers: {
           "Content-Type": "application/json",
-          pinata_api_key: PINATA_API_KEY,
-          pinata_secret_api_key: PINATA_SECRET_API_KEY,
+          pinata_api_key: process.env.PINATA_API_KEY,
+          pinata_secret_api_key: process.env.PINATA_SECRET_API_KEY,
         },
       }
     );

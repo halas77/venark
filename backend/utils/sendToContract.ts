@@ -6,9 +6,6 @@ export const AGREEMENT_FACTORY_CONTARCT_ADDRESS =
   "0xE0Ba419C4a1BCc4897CFA10135E5964779B072B7";
 export const AGREEMENT_FACTORY_CONTRACT_ABI = AgreemntABI.abi;
 
-const privateKey =
-  "a3a7627290558fcdf6777182a0f925af43841e8d2a7d7a108b5176451aabc590";
-
 const providerUrl = "https://base-sepolia-rpc.publicnode.com";
 
 const functionName = "setIPFSHash";
@@ -17,7 +14,12 @@ export async function sendToContract(companyName: string, newIpfsHash: string) {
   try {
     // Initialize provider and wallet
     const provider = new ethers.JsonRpcProvider(providerUrl);
-    const wallet = new ethers.Wallet(privateKey, provider);
+    if (!process.env.PRIVATE_KEY) {
+      throw new Error(
+        "PRIVATE_KEY is not defined in the environment variables."
+      );
+    }
+    const wallet = new ethers.Wallet(process.env.PRIVATE_KEY, provider);
 
     // Connect to the contract
     const contract = new ethers.Contract(
