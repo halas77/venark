@@ -41,7 +41,7 @@ const MyCampaign = () => {
   const [data, setData] = useState<CampaignData | null>(null);
   const [loading, setLoading] = useState(true);
 
-  const companyName: string | null = localStorage.getItem("companyName");
+  const companyName = localStorage.getItem("companyName");
 
   const { data: ipfsHash } = useReadContract({
     abi: AGREEMENT_FACTORY_CONTRACT_ABI,
@@ -51,37 +51,28 @@ const MyCampaign = () => {
   });
 
   useEffect(() => {
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 10000);
+    if (!ipfsHash) return;
 
-    const getCampaignData = async () => {
+    const fetchCampaignData = async () => {
       try {
         setLoading(true);
         const response = await axios.get(
           `https://gateway.pinata.cloud/ipfs/${ipfsHash}`,
-          { signal: controller.signal }
+          { timeout: 10000 }
         );
         setData(response.data);
-        console.log("response", response);
       } catch (error) {
         if (axios.isCancel(error)) {
-          console.error("Request canceled due to timeout:", error);
+          console.error("Request canceled:", error);
         } else {
           console.error("Error fetching campaign data:", error);
         }
       } finally {
-        clearTimeout(timeoutId);
         setLoading(false);
       }
     };
 
-    if (ipfsHash) {
-      getCampaignData();
-    }
-
-    return () => {
-      controller.abort();
-    };
+    fetchCampaignData();
   }, [ipfsHash]);
 
   return (
