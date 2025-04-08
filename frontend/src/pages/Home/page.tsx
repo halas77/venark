@@ -2,8 +2,8 @@ import Hero from "./Hero";
 import Feature from "./Feature";
 import Cta from "./Cta";
 import HowItWorks from "./HowItWorks";
-import Navbar from "../../components/Navbar";
-import Footer from "../../components/Footer";
+import Navbar from "./Navbar";
+import Footer from "./Footer";
 
 export default function Home() {
   return (
