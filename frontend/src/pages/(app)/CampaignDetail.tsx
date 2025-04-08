@@ -1,8 +1,13 @@
-import { useReadContract } from "wagmi";
+import {
+  useReadContract,
+  useWaitForTransactionReceipt,
+  useWriteContract,
+} from "wagmi";
 import Layout from "./Layout";
 import {
   AGREEMENT_FACTORY_CONTARCT_ADDRESS,
   AGREEMENT_FACTORY_CONTRACT_ABI,
+  SERVICE_AGREEMENT_CONTRACT_ABI,
 } from "@/utils/constants";
 import { useEffect, useState } from "react";
 import axios from "axios";
@@ -19,6 +24,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import ViewSummaryModal from "./ViewSummaryModal";
+import { useAppKitAccount } from "@reown/appkit/react";
 
 const CampaignDetail = () => {
   const [data, setData] = useState<CampaignData | null>(null);
@@ -26,11 +32,27 @@ const CampaignDetail = () => {
   const [generating, setGenerating] = useState(false);
   const { id } = useParams();
 
+  const { address } = useAppKitAccount();
+
   const { data: ipfsHash } = useReadContract({
     abi: AGREEMENT_FACTORY_CONTRACT_ABI,
     address: AGREEMENT_FACTORY_CONTARCT_ADDRESS,
     functionName: "ipfsHashes",
     args: [id],
+  });
+
+  const { data: proxyAddr } = useReadContract({
+    abi: AGREEMENT_FACTORY_CONTRACT_ABI,
+    address: AGREEMENT_FACTORY_CONTARCT_ADDRESS,
+    functionName: "agreementContracts",
+    args: [address],
+  });
+
+  const { data: proxyHash, writeContract: proxyWriteContract } =
+    useWriteContract();
+
+  const { isLoading: isProxyConfirming } = useWaitForTransactionReceipt({
+    hash: proxyHash,
   });
 
   useEffect(() => {
@@ -53,8 +75,6 @@ const CampaignDetail = () => {
     }
   }, [ipfsHash]);
 
-  console.log("data", data);
-
   const generateContent = async () => {
     const compaignData = {
       previousIpfsHash: ipfsHash,
@@ -63,6 +83,17 @@ const CampaignDetail = () => {
       companyDesc: isCampaignObject ? campaign.desc : "",
       account: data?.account,
     };
+
+    if (isCampaignObject && campaign.memes?.length === 0) {
+      proxyWriteContract({
+        abi: SERVICE_AGREEMENT_CONTRACT_ABI,
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-expect-error
+        address: proxyAddr,
+        functionName: "approveMilestone",
+        args: [0],
+      });
+    }
 
     try {
       setGenerating(true);
@@ -119,7 +150,9 @@ const CampaignDetail = () => {
                 variant={"outline"}
               >
                 <Rocket className="w-4 h-4" />
-                {generating ? "Generating..." : "Generate Content"}
+                {generating || isProxyConfirming
+                  ? "Generating..."
+                  : "Generate Content"}
               </Button>
             </div>
           </div>

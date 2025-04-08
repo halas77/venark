@@ -86,7 +86,8 @@ export function CustomModal({ campaign }: { campaign: Campaign }) {
   const pay = () => {
     paymentWriteContract({
       abi: SERVICE_AGREEMENT_CONTRACT_ABI,
-      // @ts-ignore
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-expect-error
       address: agreementContract,
       functionName: "depositPayment",
     });
