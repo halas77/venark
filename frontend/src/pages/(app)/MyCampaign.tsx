@@ -51,17 +51,26 @@ const MyCampaign = () => {
   });
 
   useEffect(() => {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 10000);
+
     const getCampaignData = async () => {
       try {
         setLoading(true);
         const response = await axios.get(
-          `https://gateway.pinata.cloud/ipfs/${ipfsHash}`
+          `https://gateway.pinata.cloud/ipfs/${ipfsHash}`,
+          { signal: controller.signal }
         );
         setData(response.data);
         console.log("response", response);
       } catch (error) {
-        console.error("Error fetching campaign data:", error);
+        if (axios.isCancel(error)) {
+          console.error("Request canceled due to timeout:", error);
+        } else {
+          console.error("Error fetching campaign data:", error);
+        }
       } finally {
+        clearTimeout(timeoutId);
         setLoading(false);
       }
     };
@@ -69,6 +78,10 @@ const MyCampaign = () => {
     if (ipfsHash) {
       getCampaignData();
     }
+
+    return () => {
+      controller.abort();
+    };
   }, [ipfsHash]);
 
   return (
