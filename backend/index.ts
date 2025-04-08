@@ -1,6 +1,6 @@
 require("dotenv").config();
+require("cors");
 import express from "express";
-import cors from "cors";
 import exampleRoutes from "./routes/example.r";
 import creativeRoutes from "./routes/creative.r";
 import analyzerRoutes from "./routes/analyze.r";
@@ -27,3 +27,6 @@ app.use("/api/create-agreement", agreementRoute);
 app.listen(PORT, () => {
   console.log(`⚡ Server is running on http://localhost:${PORT}`);
 });
+function cors(arg0: { origin: string[] }): any {
+  throw new Error("Function not implemented.");
+}
