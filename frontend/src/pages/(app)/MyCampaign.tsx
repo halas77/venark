@@ -39,7 +39,7 @@ export interface CampaignData {
 
 const MyCampaign = () => {
   const [data, setData] = useState<CampaignData | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   const companyName = localStorage.getItem("companyName");
 
@@ -49,8 +49,6 @@ const MyCampaign = () => {
     functionName: "ipfsHashes",
     args: [companyName],
   });
-
-  console.log("ipfsHash", ipfsHash);
 
   useEffect(() => {
     if (!ipfsHash) return;
@@ -93,7 +91,6 @@ const MyCampaign = () => {
         {/* Loading State */}
         {loading && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <p className="text-white">LOADING...</p>
             {[...Array(3)].map((_, i) => (
               <Card key={i} className="bg-gray-900/50 border-gray-900">
                 <div className="p-4 space-y-4">
