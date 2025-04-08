@@ -106,7 +106,6 @@ const CampaignDetail = () => {
       refetch();
     } catch (error) {
       toast("Error generating content");
-
       console.error("Error generating content:", error);
     } finally {
       setGenerating(false);
