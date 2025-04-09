@@ -1,10 +1,10 @@
 import { TwitterApi } from "twitter-api-v2";
 
 const twitterClient = new TwitterApi({
-  appKey: "bR6PdBPj0SI5ZlbQcpfZYd1ho",
-  appSecret: "7xvb3YzFL6yv3rMgIXeTNIhybhqN0qqPuhzYi2zciTfPvwqYWm",
-  accessToken: "1898359240709840896-QCruicQDqJrRYcKodVAblK7rE9gF2t",
-  accessSecret: "dYLd5w32u0Bh3BnrHSBn3sqo2hCbplwy769XCb1MtAVgG",
+  appKey: process.env.X_APP_KEY,
+  appSecret: process.env.X_APP_SECRET,
+  accessToken: process.env.X_ACCESS_TOKEN,
+  accessSecret: process.env.X_ACCESS_SECRET,
 });
 
 export const tweetContent = async (tweetText: any, mediaPath: string) => {
@@ -25,8 +25,11 @@ export const tweetContent = async (tweetText: any, mediaPath: string) => {
 
 export const fetchRecentTweets = async () => {
   try {
-    const tweets = await twitterClient.v2.userTimeline("1898359240709840896", {
-      max_results: 5,
+    if (!process.env.X_USER_ID) {
+      throw new Error("Environment variable X_USER_ID is not defined");
+    }
+    const tweets = await twitterClient.v2.userTimeline(process.env.X_USER_ID, {
+      max_results: 3,
       "tweet.fields": "public_metrics",
     });
 
