@@ -6,7 +6,6 @@ A decentralized marketing platform that combines NFT-gated access with smart con
 
 ### 🔐 NFT-Gated Access Control
 - Exclusive platform access via membership NFTs
-- Decentralized identity verification
 - Tiered access levels based on NFT attributes
 
 ### 📜 On-Chain Agreements
@@ -18,13 +17,10 @@ A decentralized marketing platform that combines NFT-gated access with smart con
 ### 💰 Pay Per Milestone
 - Flexible payment structures
 - Milestone-based fund release
-- Crypto-native payments (ETH, USDC, etc.)
-- Real-time payment tracking
+- Crypto-native payments (USDC)
 
 ### 🎛️ Dashboard Control
-- Campaign performance analytics
 - AI-generated content management
-- Real-time campaign adjustments
 - Multi-platform integration overview
 
 ## 🛠️ Tech Stack
