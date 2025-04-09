@@ -6,6 +6,8 @@ export const createAgreementController = async (
   req: Request,
   res: Response
 ) => {
+  console.log("working here ....");
+
   try {
     const {
       companyDesc,
